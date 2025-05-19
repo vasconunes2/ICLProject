@@ -1,2 +1,3 @@
-x = list(range(5))
-print("hello, world")
+x = 5
+x = 10
+z = x
