@@ -2,4 +2,6 @@ def f(x):
     return x
 
 def f(y):
-    return y + 1
+    return y
+
+print(1)

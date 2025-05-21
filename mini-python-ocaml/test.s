@@ -3,21 +3,101 @@
 main:
 	pushq %rbp
 	movq %rsp, %rbp
-	andq $-16, %rsp
-	movq $5, %rdi
+	subq $8, %rsp
+	movq $2, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	call F_f
+	addq $16, %rsp
+	movq %rax, %rdi
 	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	movq %rdi, -16(%rbp)
-	movq -16(%rbp), %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	call F_f
+	addq $16, %rsp
+	movq %rax, %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	call F_f
+	addq $16, %rsp
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_add_int
+	movq %rax, %rdi
 	call P_print
 	call P_print_newline
 	xorq %rax, %rax
 	movq %rbp, %rsp
 	popq %rbp
 	ret
+F_f:
+	pushq %rbp
+	movq %rsp, %rbp
+	movq 16(%rbp), %rdi
+	pushq %rdi
+	movq 24(%rbp), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_add_int
+	movq %rax, %rdi
+	movq %rdi, %rax
+	jmp L_2
+L_2:
+	movq %rbp, %rsp
+	popq %rbp
+	ret
 
+P_test: # argument in %rdi
+      pushq   %rbp
+      movq    %rsp, %rbp
+      movq    (%rdi), %rax
+      cmpq    $0, %rax
+      je      E_test
+      movq    8(%rdi), %rax
+E_test:
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
+P_print_None:
+      pushq   %rbp
+      movq    %rsp, %rbp
+      andq    $-16, %rsp
+      movq    $S_message_None, %rdi
+      xorq    %rax, %rax
+      call    printf
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
+P_print_string:
+      pushq   %rbp
+      movq    %rsp, %rbp
+      andq    $-16, %rsp
+      movq    %rdi, %rsi
+      movq    $S_message_string, %rdi
+      xorq    %rax, %rax
+      call    printf
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
 P_print_int:
       pushq   %rbp
       movq    %rsp, %rbp
@@ -35,8 +115,23 @@ P_print:
       # and let us ignore the tag
       pushq   %rbp
       movq    %rsp, %rbp
+      cmpq    $0, (%rdi) # is this None?
+      je      0f
+      cmpq    $2, (%rdi) # is this integer?
+      je      2f
+      cmpq    $3, (%rdi) # is this String?
+      je      3f
+0:
+      call    P_print_None
+      jmp     E_print
+3:
+      leaq    16(%rdi), %rdi
+      call    P_print_string
+      jmp     E_print
+2:
       movq    8(%rdi), %rdi
       call    P_print_int
+E_print:
       movq    %rbp, %rsp
       popq    %rbp
       ret
@@ -67,6 +162,20 @@ P_alloc_int:
       movq    %rbp, %rsp
       popq    %rbp
       ret                 # the result is in %rax
+P_alloc_list:
+      pushq   %rbp
+      movq    %rsp, %rbp
+      pushq   %rdi        # the length of the list
+      andq    $-16, %rsp  # stack alignment;
+      shl     $3, %rdi    # 8 * %rdi
+      addq    $16, %rdi   # %rdi = 16 + 8 * length of the list
+      call    malloc
+      movq    $4, (%rax)
+      movq    -8(%rbp), %rdi
+      movq    %rdi, 8(%rax)
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret                 # the result is in %rax
 P_print_newline:
       pushq   %rbp
       movq    %rsp, %rbp
@@ -77,10 +186,54 @@ P_print_newline:
       movq    %rbp, %rsp
       popq    %rbp
       ret
+P_add_int: # first argument in %rdi, second argument in %rsi
+      pushq   %rbp
+      movq    %rsp, %rbp
+      movq    8(%rdi), %rdi
+      addq    8(%rsi), %rdi
+      call    P_alloc_int
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
+P_sub_int: # first argument in %rdi, second argument in %rsi
+      pushq   %rbp
+      movq    %rsp, %rbp
+      movq    8(%rdi), %rdi
+      subq    8(%rsi), %rdi
+      call    P_alloc_int
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
+P_div_int: # first argument in %rdi, second argument in %rsi
+      pushq   %rbp
+      movq    %rsp, %rbp
+      movq    8(%rdi), %rax
+      cqto
+      movq    8(%rsi), %rsi
+      idivq   %rsi
+      movq    %rax, %rdi
+      call    P_alloc_int
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
+P_mod_int: # first argument in %rdi, second argument in %rsi
+      pushq   %rbp
+      movq    %rsp, %rbp
+      movq    8(%rdi), %rax
+      cqto
+      movq    8(%rsi), %rsi
+      idivq   %rsi
+      movq    %rdx, %rdi
+      call    P_alloc_int
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
 	.data
 
 S_message_int:
   .string    "%d"
+S_message_string:
+  .string    "%s"
 S_message_None:
   .string    "None"
 S_newline:

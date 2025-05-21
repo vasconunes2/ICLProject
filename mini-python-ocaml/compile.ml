@@ -6,6 +6,38 @@ open Ast
 let debug = ref false
 
 let preamble = "
+P_test: # argument in %rdi
+      pushq   %rbp
+      movq    %rsp, %rbp
+      movq    (%rdi), %rax
+      cmpq    $0, %rax
+      je      E_test
+      movq    8(%rdi), %rax
+E_test:
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
+P_print_None:
+      pushq   %rbp
+      movq    %rsp, %rbp
+      andq    $-16, %rsp
+      movq    $S_message_None, %rdi
+      xorq    %rax, %rax
+      call    printf
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
+P_print_string:
+      pushq   %rbp
+      movq    %rsp, %rbp
+      andq    $-16, %rsp
+      movq    %rdi, %rsi
+      movq    $S_message_string, %rdi
+      xorq    %rax, %rax
+      call    printf
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
 P_print_int:
       pushq   %rbp
       movq    %rsp, %rbp
@@ -23,8 +55,23 @@ P_print:
       # and let us ignore the tag
       pushq   %rbp
       movq    %rsp, %rbp
+      cmpq    $0, (%rdi) # is this None?
+      je      0f
+      cmpq    $2, (%rdi) # is this integer?
+      je      2f
+      cmpq    $3, (%rdi) # is this String?
+      je      3f
+0:
+      call    P_print_None
+      jmp     E_print
+3:
+      leaq    16(%rdi), %rdi
+      call    P_print_string
+      jmp     E_print
+2:
       movq    8(%rdi), %rdi
       call    P_print_int
+E_print:
       movq    %rbp, %rsp
       popq    %rbp
       ret
@@ -55,6 +102,20 @@ P_alloc_int:
       movq    %rbp, %rsp
       popq    %rbp
       ret                 # the result is in %rax
+P_alloc_list:
+      pushq   %rbp
+      movq    %rsp, %rbp
+      pushq   %rdi        # the length of the list
+      andq    $-16, %rsp  # stack alignment;
+      shl     $3, %rdi    # 8 * %rdi
+      addq    $16, %rdi   # %rdi = 16 + 8 * length of the list
+      call    malloc
+      movq    $4, (%rax)
+      movq    -8(%rbp), %rdi
+      movq    %rdi, 8(%rax)
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret                 # the result is in %rax
 P_print_newline:
       pushq   %rbp
       movq    %rsp, %rbp
@@ -65,11 +126,55 @@ P_print_newline:
       movq    %rbp, %rsp
       popq    %rbp
       ret
+P_add_int: # first argument in %rdi, second argument in %rsi
+      pushq   %rbp
+      movq    %rsp, %rbp
+      movq    8(%rdi), %rdi
+      addq    8(%rsi), %rdi
+      call    P_alloc_int
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
+P_sub_int: # first argument in %rdi, second argument in %rsi
+      pushq   %rbp
+      movq    %rsp, %rbp
+      movq    8(%rdi), %rdi
+      subq    8(%rsi), %rdi
+      call    P_alloc_int
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
+P_div_int: # first argument in %rdi, second argument in %rsi
+      pushq   %rbp
+      movq    %rsp, %rbp
+      movq    8(%rdi), %rax
+      cqto
+      movq    8(%rsi), %rsi
+      idivq   %rsi
+      movq    %rax, %rdi
+      call    P_alloc_int
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
+P_mod_int: # first argument in %rdi, second argument in %rsi
+      pushq   %rbp
+      movq    %rsp, %rbp
+      movq    8(%rdi), %rax
+      cqto
+      movq    8(%rsi), %rsi
+      idivq   %rsi
+      movq    %rdx, %rdi
+      call    P_alloc_int
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
 "
 
 let data_inline = "
 S_message_int:
   .string    \"%d\"
+S_message_string:
+  .string    \"%s\"
 S_message_None:
   .string    \"None\"
 S_newline:
@@ -125,6 +230,22 @@ let rec alloc_vars env (s: Ast.tstmt) =
   | TSeval _ -> ()
   | TSset (_, _, _) -> ()
 
+type string_env = (string, string) Hashtbl.t
+
+let string_env : string_env = Hashtbl.create 16
+
+let new_string =
+  let c = ref 0 in
+  fun s -> incr c;
+    let l = "S_" ^ (string_of_int !c) in
+    Hashtbl.add string_env l s;
+    l
+
+let rec fold_i f i acc l =
+  match l with
+  | [] -> acc
+  | x :: r -> fold_i f (i + 1) (f i acc x) r
+
 let rec compile_expr (e: Ast.texpr) =
   match e with
   | TEcst (Cint n) ->
@@ -132,10 +253,27 @@ let rec compile_expr (e: Ast.texpr) =
       movq (reg rax) (reg rdi)
   | TEcst Cnone ->
       movq (ilab "C_None") (reg rdi)
-  | TEcst _ -> assert false (* TODO *)
+  | TEcst (Cstring s) ->
+      let l = new_string s in
+      movq (ilab l) (reg rdi)
+  | TEcst (Cbool b) ->
+      if b then movq (ilab "C_True") (reg rdi)
+      else movq (ilab "C_False") (reg rdi)
   | TEvar x ->
       let ofs = x.v_ofs in
       movq (ind ~ofs rbp) (reg rdi)
+  | TEbinop (Badd, e1, e2) ->
+      compile_expr e1 ++ (* in %rdi *)
+      pushq (reg rdi) ++
+      compile_expr e2 ++
+      movq (reg rdi) (reg rsi) ++ (* %rsi = e2 *)
+      popq rdi ++ (* %rdi = e1 *)
+      call "P_add_int" ++ (* result in %rax *)
+      movq (reg rax) (reg rdi)
+  | TEbinop (Bsub, _, _) -> assert false (* TODO *)
+  | TEbinop (Bmul, _, _) -> assert false (* TODO *)
+  | TEbinop (Bdiv, _, _) -> assert false (* TODO *)
+  | TEbinop (Bmod, _, _) -> assert false (* TODO *)
   | TEbinop (_, _, _) -> assert false (* TODO *)
   | TEunop (_, _) -> assert false (* TODO *)
   | TEcall (fn, el) ->
@@ -146,13 +284,34 @@ let rec compile_expr (e: Ast.texpr) =
       call ("F_" ^ fn.fn_name) ++
       addq (imm (8 * List.length el)) (reg rsp) ++
       movq (reg rax) (reg rdi)
-  | TElist _ -> assert false (* TODO *)
+  | TElist el ->
+      let push_e acc e =
+        compile_expr e ++ pushq (reg rdi) ++ acc in
+      let pop_e i a e =
+        let ofs = 16 + i * 8 in
+        a ++ popq rdi ++ movq (reg rdi) (ind ~ofs rax) in
+      List.fold_left push_e nop el ++
+      movq (imm (List.length el)) (reg rdi) ++
+      call "P_alloc_list" ++
+      fold_i pop_e 0 nop el ++
+      movq (reg rax) (reg rdi)
   | TErange _ -> assert false (* TODO *)
   | TEget (_, _) -> assert false (* TODO *)
 
 let rec compile_stmt exit_lbl (s: Ast.tstmt) =
   match s with
-  | TSif (_, _, _) -> assert false (* TODO *)
+  | TSif (e, s1, s2) ->
+      let l_else = new_label () in
+      let l_end = new_label () in
+      compile_expr e ++
+      call "P_test" ++
+      testq (reg rax) (reg rax) ++
+      jz l_else ++
+      compile_stmt exit_lbl s1 ++
+      jmp l_end ++
+      label l_else ++
+      compile_stmt exit_lbl s2 ++
+      label l_end
   | TSreturn e ->
       compile_expr e ++
       movq (reg rdi) (reg rax) ++
@@ -186,7 +345,7 @@ let compile_tdef (fn, tstmt) =
   let lbl = label ("F_" ^ fn.fn_name) in
   let locals =
     if env.nb_total = 0 then nop
-    else andq (imm (-8 * env.nb_total)) (reg rsp) in
+    else subq (imm (8 * env.nb_total)) (reg rsp) in
   (* put everything together *)
   lbl ++ (* introduce label *)
   enter ++ (* classic entering function *)
@@ -202,7 +361,7 @@ let compile_main (fn, tstmt) =
   let locals =
     if env.nb_total = 0 then nop
     else
-      andq (imm (-8 * env.nb_total)) (reg rsp) in
+      subq (imm (8 * env.nb_total)) (reg rsp) in
   enter ++
   (* modify rsp according to the total number of
      local variables to allocate *)
@@ -210,13 +369,19 @@ let compile_main (fn, tstmt) =
   compile_stmt l tstmt ++
   xorq (reg rax) (reg rax)
 
+let inline_strings () =
+  let alloc_string l s acc =
+    label l ++ dquad [3; String.length s] ++ string s ++ acc in
+  Hashtbl.fold alloc_string string_env nop
+
 let file ?debug:(b=false) (p: Ast.tfile) : X86_64.program =
   debug := b;
   match p with
   | [] -> assert false
   | m :: r ->
+    let cmain = compile_main m ++ leave in
     let cfile =
       List.fold_left (fun a td -> a ++ compile_tdef td) nop r in
-    { text = globl "main" ++ label "main" ++ compile_main m ++
-             leave ++ cfile ++ inline preamble;
-      data = inline data_inline; }
+    { text = globl "main" ++ label "main" ++ cmain ++
+             cfile ++ inline preamble;
+      data = inline data_inline ++ inline_strings (); }

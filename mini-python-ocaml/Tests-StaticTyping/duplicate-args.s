@@ -3,16 +3,8 @@
 main:
 	pushq %rbp
 	movq %rsp, %rbp
-	movq $2, %rdi
+	movq $1, %rdi
 	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
-	movq $3, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
-	call F_f
-	addq $16, %rsp
 	movq %rax, %rdi
 	call P_print
 	call P_print_newline
@@ -23,7 +15,7 @@ main:
 F_f:
 	pushq %rbp
 	movq %rsp, %rbp
-	movq 16(%rbp), %rdi
+	movq 32(%rbp), %rdi
 	movq %rdi, %rax
 	jmp L_1
 L_1:
