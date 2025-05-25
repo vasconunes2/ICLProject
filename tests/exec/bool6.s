@@ -106,29 +106,24 @@ P_print_int:
       popq    %rbp
       ret
 
-
-Ret_True:
-      movq    $S_bool_True, %rdi
-      xorq    %rax, %rax
-      call    printf
-      movq    %rbp, %rsp
-      popq    %rbp
-      ret
-Ret_False:
-      movq    $S_bool_False, %rdi
-      xorq    %rax, %rax
-      call    printf
-      movq    %rbp, %rsp
-      popq    %rbp
-      ret
+P_print_list: 
+    
 
 P_print_bool:
       pushq   %rbp
       movq    %rsp, %rbp
       movq    %rdi, %rsi
       cmpq    $0, %rdi
-      jne      Ret_True
-      jmp      Ret_False
+      jne     Ret_True
+      movq    $S_bool_False, %rdi
+      xorq    %rax, %rax
+      call    printf
+      jmp End
+Ret_True:
+      movq    $S_bool_True, %rdi
+      xorq    %rax, %rax
+      call    printf
+      jmp End
 
 P_print:
       # arg to print is in %rdi;
@@ -160,6 +155,7 @@ P_print:
       movq    8(%rdi), %rdi
       call    P_print_bool
       jmp     End
+
 B_eq:
       pushq   %rbp
       movq    %rsp, %rbp
@@ -189,19 +185,28 @@ B_lt:
       movq    %rsp, %rbp
       movq    8(%rdi), %rdi
       movq    8(%rsi), %rsi
-      cmpq    %rdi, %rsi
+      cmpq    %rsi,%rdi 
       setl    %al  #store the result in %al
       movzbq  %al, %rdi # zero extend %al to %rdi
       call    P_alloc_bool # allocate a boolean
-      movq    %rbp, %rsp
-      popq    %rbp
-      ret
+      jmp End
+
+B_le:
+      pushq   %rbp
+      movq    %rsp, %rbp
+      movq    8(%rdi), %rdi
+      movq    8(%rsi), %rsi
+      cmpq    %rsi,%rdi 
+      setle   %al  #store the result in %al
+      movzbq  %al, %rdi # zero extend %al to %rdi
+      call    P_alloc_bool # allocate a boolean
+      jmp End
 B_gt:
       pushq   %rbp
       movq    %rsp, %rbp
       movq    8(%rdi), %rdi
       movq    8(%rsi), %rsi
-      cmpq    %rdi, %rsi
+      cmpq    %rsi,%rdi 
       setg    %al  #store the result in %al
       movzbq  %al, %rdi # zero extend %al to %rdi
       call    P_alloc_bool # allocate a boolean
@@ -213,7 +218,7 @@ B_ge:
       movq    %rsp, %rbp
       movq    8(%rdi), %rdi
       movq    8(%rsi), %rsi
-      cmpq    %rdi, %rsi
+      cmpq    %rsi,%rdi 
       setge   %al  #store the result in %al
       movzbq  %al, %rdi # zero extend %al to %rdi
       call    P_alloc_bool # allocate a boolean

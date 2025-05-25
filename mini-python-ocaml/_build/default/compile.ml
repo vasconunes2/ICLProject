@@ -48,31 +48,23 @@ P_print_int:
       call    printf
       movq    %rbp, %rsp
       popq    %rbp
-      ret
-
-
-Ret_True:
-      movq    $S_bool_True, %rdi
-      xorq    %rax, %rax
-      call    printf
-      movq    %rbp, %rsp
-      popq    %rbp
-      ret
-Ret_False:
-      movq    $S_bool_False, %rdi
-      xorq    %rax, %rax
-      call    printf
-      movq    %rbp, %rsp
-      popq    %rbp
-      ret
+      ret    
 
 P_print_bool:
       pushq   %rbp
       movq    %rsp, %rbp
       movq    %rdi, %rsi
       cmpq    $0, %rdi
-      jne      Ret_True
-      jmp      Ret_False
+      jne     Ret_True
+      movq    $S_bool_False, %rdi
+      xorq    %rax, %rax
+      call    printf
+      jmp End
+Ret_True:
+      movq    $S_bool_True, %rdi
+      xorq    %rax, %rax
+      call    printf
+      jmp End
 
 P_print:
       # arg to print is in %rdi;
@@ -133,19 +125,28 @@ B_lt:
       movq    %rsp, %rbp
       movq    8(%rdi), %rdi
       movq    8(%rsi), %rsi
-      cmpq    %rdi, %rsi
+      cmpq    %rsi,%rdi 
       setl    %al  #store the result in %al
       movzbq  %al, %rdi # zero extend %al to %rdi
       call    P_alloc_bool # allocate a boolean
-      movq    %rbp, %rsp
-      popq    %rbp
-      ret
+      jmp End
+
+B_le:
+      pushq   %rbp
+      movq    %rsp, %rbp
+      movq    8(%rdi), %rdi
+      movq    8(%rsi), %rsi
+      cmpq    %rsi,%rdi 
+      setle   %al  #store the result in %al
+      movzbq  %al, %rdi # zero extend %al to %rdi
+      call    P_alloc_bool # allocate a boolean
+      jmp End
 B_gt:
       pushq   %rbp
       movq    %rsp, %rbp
       movq    8(%rdi), %rdi
       movq    8(%rsi), %rsi
-      cmpq    %rdi, %rsi
+      cmpq    %rsi,%rdi 
       setg    %al  #store the result in %al
       movzbq  %al, %rdi # zero extend %al to %rdi
       call    P_alloc_bool # allocate a boolean
@@ -157,7 +158,7 @@ B_ge:
       movq    %rsp, %rbp
       movq    8(%rdi), %rdi
       movq    8(%rsi), %rsi
-      cmpq    %rdi, %rsi
+      cmpq    %rsi,%rdi 
       setge   %al  #store the result in %al
       movzbq  %al, %rdi # zero extend %al to %rdi
       call    P_alloc_bool # allocate a boolean
@@ -257,7 +258,8 @@ P_alloc_list:
       movq    %rdi, 8(%rax)
   jmp End
 
-    
+
+
 P_print_newline:
       pushq   %rbp
       movq    %rsp, %rbp
@@ -267,12 +269,27 @@ P_print_newline:
       call    printf
   jmp End
 
+P_add:
+  pushq   %rbp
+  movq    %rsp, %rbp
+  cmpq    $3, (%rdi) # is first argument a string?
+  je      P_add_str
+  cmpq    $2, (%rdi) # is first argument an integer?
+  je      P_add_int
+  jmp     End
+
 P_add_int: # first argument in %rdi, second argument in %rsi
-      pushq   %rbp
-      movq    %rsp, %rbp
+  pushq   %rbp
+  movq    %rsp, %rbp
       movq    8(%rdi), %rdi
       addq    8(%rsi), %rdi
       call    P_alloc_int
+  jmp     End
+P_add_str: # first argument in %rdi, second argument in %rsi
+      pushq   %rbp
+      movq    %rsp, %rbp
+      movq    8(%rdi), %rdi
+      movq    8(%rsi), %rsi
   jmp End
 
 P_sub_int: # first argument in %rdi, second argument in %rsi
@@ -415,7 +432,7 @@ let rec compile_expr (e: Ast.texpr) =
       movq (ind ~ofs rbp) (reg rdi)
   | TEbinop (binop, e1, e2) ->
      let op = match binop with
-        | Badd -> "P_add_int"
+        | Badd -> "P_add_int" (*TODO: suppose P_add*)
         | Bsub -> "P_sub_int"
         | Bmul -> "P_mul_int"
         | Bdiv -> "P_div_int"
