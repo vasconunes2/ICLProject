@@ -25,19 +25,28 @@
   type var_env = (string, var) H.t
 
   (*5 This function checks for duplicate arguments in a function definition*)
-  let check_args args : unit =
-    let rec aux acc = function
+let check_args args : unit =
+    let rec aux ids = function
       | [] -> ()
       | x :: xs ->
-          if List.mem x acc then
+          if List.exists (fun y -> y.id = x.id) ids then
             error ~loc:x.loc "duplicate argument %s" x.id
           else
-            aux (x :: acc) xs
+            aux (x :: ids) xs
     in
     aux [] args
 
-
     
+  let add_builtin_fn name arity =
+    let params = List.init arity (fun i -> { v_name = "arg" ^ string_of_int i; v_ofs = -1 }) in
+    let fn = { fn_name = name; fn_params = params } in
+    H.add fn_env name fn
+
+  let () =
+    add_builtin_fn "len" 1;
+    add_builtin_fn "list" 1;
+    add_builtin_fn "range" 1
+      
   let rec expr (ctx: var_env) (e: Ast.expr) =
     match e with
     | Ecst c -> TEcst c
@@ -98,7 +107,7 @@
         TSprint (expr ctx e)
     | Sblock sl ->
         TSblock (List.map (stmt ctx) sl)
-    | Sfor (x, e, s) -> (*assert false  TODO *)
+    | Sfor (x, e, s) -> 
         let v = H.find ctx x.id in
         TSfor(v,expr ctx e,stmt ctx s)
     | Seval e ->
@@ -107,12 +116,12 @@
         TSset (expr ctx e1, expr ctx e2, expr ctx e3)
 
   (*6. The scope of variables is statically defined.*)
-  let alloc_var ctx x =
-    if H.mem ctx x.id then
+let alloc_var ctx x =
+  match H.find_opt ctx x.id with
+  | Some v when v.v_ofs <> -1 -> (*is Local varieble*)
       error ~loc:x.loc "Variable %s is already defined" x.id
-    else
-      H.add ctx x.id { v_name = x.id; v_ofs = -1 }
-
+  | _ ->
+      H.replace ctx x.id { v_name = x.id; v_ofs = -1 }
 
   let rec alloc_vars ctx (s: Ast.stmt) =
     match s with

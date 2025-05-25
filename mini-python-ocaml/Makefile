@@ -1,6 +1,6 @@
 
 all: minipython.exe
-	dos2unix test.py
+	dos2unix ./test.py
 	./minipython.exe --debug test.py
 	gcc -no-pie -g test.s && ./a.out
 
