@@ -61,7 +61,7 @@ P_print_int:
       movq    %rsp, %rbp
       andq    $-16, %rsp
       movq    %rdi, %rsi
-      movq    $S_message_int, %rdi
+      leaq S_message_int(%rip), %rdi
       xorq    %rax, %rax
       call    printf
       movq    %rbp, %rsp
@@ -282,7 +282,7 @@ P_print_newline:
       pushq   %rbp
       movq    %rsp, %rbp
       andq    $-16, %rsp
-      movq    $S_newline, %rdi
+     leaq S_newline(%rip), %rdi
       xorq    %rax, %rax
       call    printf
   jmp End
