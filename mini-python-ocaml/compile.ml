@@ -6,6 +6,7 @@ open Ast
 let debug = ref false
 
 let preamble = "
+
 P_test: # argument in %rdi
       pushq   %rbp
       movq    %rsp, %rbp
@@ -29,7 +30,31 @@ P_print_None:
       movq    %rbp, %rsp
       popq    %rbp
       ret
+Get:
+    pushq   %rbp
+    movq    %rsp, %rbp
 
+    movq    8(%rsi), %rcx        # rcx = index
+
+    movq    8(%rdi), %rdx        # rdx = len(obj)
+
+    testq   %rcx, %rcx
+    js      Get_IndexError
+
+    cmpq    %rdx, %rcx
+    jae     Get_IndexError
+
+    movq    16(%rdi), %rdx       # rdx = obj.data_ptr
+
+    movq    (%rdx, %rcx, 8), %rax
+            movq    %rbp, %rsp
+      popq    %rbp
+      ret
+Get_IndexError:
+    xorq    %rax, %rax
+          movq    %rbp, %rsp
+      popq    %rbp
+      ret
 P_print_string:
       pushq   %rbp
       movq    %rsp, %rbp
@@ -63,13 +88,17 @@ P_print_bool:
       movq    $S_bool_False, %rdi
       xorq    %rax, %rax
       call    printf
-      jmp End
+            movq    %rbp, %rsp
+      popq    %rbp
+      ret
 
 Ret_True:
       movq    $S_bool_True, %rdi
       xorq    %rax, %rax
       call    printf
-      jmp End
+            movq    %rbp, %rsp
+      popq    %rbp
+      ret
 
 
 P_print:
@@ -91,23 +120,30 @@ P_print:
 
 0:
       call    P_print_None
-      jmp End
+            movq    %rbp, %rsp
+      popq    %rbp
+      ret
 4:
-      call    P_print_list
       jmp     End      
 3:
       leaq    16(%rdi), %rdi
       call    P_print_string
-      jmp End
+            movq    %rbp, %rsp
+      popq    %rbp
+      ret
 2:
       movq    8(%rdi), %rdi
       call    P_print_int
-      jmp End
+            movq    %rbp, %rsp
+      popq    %rbp
+      ret
 
 1:
       movq    8(%rdi), %rdi
       call    P_print_bool
-      jmp End
+            movq    %rbp, %rsp
+      popq    %rbp
+      ret
 B_eq:
       pushq   %rbp
       movq    %rsp, %rbp
@@ -141,7 +177,9 @@ B_lt:
       setl    %al  #store the result in %al
       movzbq  %al, %rdi # zero extend %al to %rdi
       call    P_alloc_bool # allocate a boolean
-      jmp End
+            movq    %rbp, %rsp
+      popq    %rbp
+      ret
 
 B_le:
       pushq   %rbp
@@ -152,7 +190,9 @@ B_le:
       setle   %al  #store the result in %al
       movzbq  %al, %rdi # zero extend %al to %rdi
       call    P_alloc_bool # allocate a boolean
-      jmp End
+            movq    %rbp, %rsp
+      popq    %rbp
+      ret
 B_gt:
       pushq   %rbp
       movq    %rsp, %rbp
@@ -186,10 +226,14 @@ B_ge:
     cmpq    $0, 8(%rdi)
     je      B_and_false
     movq    %rsi, %rax
-    jmp End
+          movq    %rbp, %rsp
+      popq    %rbp
+      ret
   B_and_false:
     movq %rdi, %rax
-    jmp End
+          movq    %rbp, %rsp
+      popq    %rbp
+      ret
 
   B_or:
     pushq   %rbp
@@ -199,11 +243,15 @@ B_ge:
     cmpq    $0, 8(%rdi)
     je      B_or_true 
     movq    %rdi, %rax # if first argument is True, then return first
-    jmp End
+          movq    %rbp, %rsp
+      popq    %rbp
+      ret
 
   B_or_true:
     movq %rsi, %rax
-    jmp End
+          movq    %rbp, %rsp
+      popq    %rbp
+      ret
   
 
 End:
@@ -221,7 +269,9 @@ P_alloc_bool: # The boolean have structure: [1 | 0/1] init with 0
       movq    $1, (%rax)  # tag of a boolean block
       movq    -8(%rbp), %rdi 
       movq    %rdi, 8(%rax)  
-  jmp End
+        movq    %rbp, %rsp
+      popq    %rbp
+      ret
           
 P_alloc_None:
       pushq   %rbp
@@ -230,7 +280,9 @@ P_alloc_None:
       movq    $16, %rdi   # allocate 16 bytes for None
       call    malloc
       movq    $0, (%rax)  # tag of a None block
-  jmp End
+        movq    %rbp, %rsp
+      popq    %rbp
+      ret
 
 P_alloc_int:
       pushq   %rbp
@@ -256,7 +308,9 @@ P_alloc_int:
       ####        | 8 bytes | 8 bytes |
       ####        +---------+---------+
       ####
-  jmp End
+        movq    %rbp, %rsp
+      popq    %rbp
+      ret
 
 P_alloc_list:
       pushq   %rbp
@@ -269,7 +323,9 @@ P_alloc_list:
       movq    $4, (%rax)
       movq    -8(%rbp), %rdi
       movq    %rdi, 8(%rax)
-  jmp End
+        movq    %rbp, %rsp
+      popq    %rbp
+      ret
 
 P_alloc_str:
     pushq   %rbp
@@ -281,7 +337,9 @@ P_alloc_str:
     movq    $3, (%rax)  
     movq    -8(%rbp), %rsi
     movq    %rsi, 8(%rax)
-  jmp End
+        movq    %rbp, %rsp
+      popq    %rbp
+      ret
 
 P_print_newline:
       pushq   %rbp
@@ -290,7 +348,9 @@ P_print_newline:
      leaq S_newline(%rip), %rdi
       xorq    %rax, %rax
       call    printf
-  jmp End
+        movq    %rbp, %rsp
+      popq    %rbp
+      ret
 
 P_add:
   pushq   %rbp
@@ -299,7 +359,9 @@ P_add:
   je      P_add_str
   cmpq    $2, (%rdi) # is first argument an integer?
   je      P_add_int
-  jmp End
+        movq    %rbp, %rsp
+      popq    %rbp
+      ret
 
 P_add_int: # first argument in %rdi, second argument in %rsi
   pushq   %rbp
@@ -307,29 +369,34 @@ P_add_int: # first argument in %rdi, second argument in %rsi
       movq    8(%rdi), %rdi
       addq    8(%rsi), %rdi
       call    P_alloc_int
-  jmp End
+        movq    %rbp, %rsp
+      popq    %rbp
+      ret
 
-  P_len:
+F_len:
     pushq %rbp
     movq  %rsp, %rbp
 
-    movq  (%rdi), %rsi    
-    cmpq  $1, %rsi         #if list
-    je    .is_list
-    cmpq  $3, %rsi         # if string
-    je    .is_string
+    cmpq  $4, (%rdi)         #if list
+    je    .valid
+    cmpq  $3, (%rdi)         # if string
+    je    .valid
 
-    # Not a list or a string -> error
-    movq  $0, %rax
-    jmp End
-.is_list:
-    movq  8(%rdi), %rax    # reads the lenght
-    jmp End
-.is_string:
-    movq  8(%rdi), %rax    # reads the length
-  jmp End
+    # The e is not valid attribute
+    movq    $S_Error_Message_Type, %rdi
+    xorq    %rax, %rax
+    call    printf
+    movq    $1,   %rdi
+    call exit
+.valid:
+    movq  8(%rdi), %rdi    # reads the lenght
+    call P_alloc_int
+    movq    %rbp, %rsp
+    popq    %rbp
+    ret
 
-  P_range:
+
+P_range:
     pushq   %rbp
     movq    %rsp, %rbp
 
@@ -344,7 +411,7 @@ P_add_int: # first argument in %rdi, second argument in %rsi
 
     popq    %rcx
 
-    movq    $0, %rdx           # i = 0
+    movq    $0, %rdx           # i = 0  
 .loop:
     cmpq    %rdx, %rcx         # compare i and n
     jge     .done              # if i >= n sai se do loop
@@ -415,7 +482,9 @@ P_add_str:
 
     addq    $16, %rsp         # clean the stack
 
-  jmp End
+        movq    %rbp, %rsp
+      popq    %rbp
+      ret
 
 P_sub_int: # first argument in %rdi, second argument in %rsi
       pushq   %rbp
@@ -423,7 +492,9 @@ P_sub_int: # first argument in %rdi, second argument in %rsi
       movq    8(%rdi), %rdi
       subq    8(%rsi), %rdi
       call    P_alloc_int
-  jmp End
+        movq    %rbp, %rsp
+      popq    %rbp
+      ret
 
 P_div_int: # first argument in %rdi, second argument in %rsi
       pushq   %rbp
@@ -434,7 +505,9 @@ P_div_int: # first argument in %rdi, second argument in %rsi
       idivq   %rsi
       movq    %rax, %rdi
       call    P_alloc_int
-  jmp End
+        movq    %rbp, %rsp
+      popq    %rbp
+      ret
 
 P_mod_int: # first argument in %rdi, second argument in %rsi
       pushq   %rbp
@@ -445,7 +518,9 @@ P_mod_int: # first argument in %rdi, second argument in %rsi
       idivq   %rsi
       movq    %rdx, %rdi
       call    P_alloc_int
-  jmp End
+        movq    %rbp, %rsp
+      popq    %rbp
+      ret
 
 P_mul_int:
       pushq   %rbp
@@ -453,7 +528,9 @@ P_mul_int:
       movq    8(%rdi), %rdi
       imulq   8(%rsi), %rdi
       call    P_alloc_int
-  jmp End
+        movq    %rbp, %rsp
+      popq    %rbp
+      ret
 
 
 "
@@ -471,6 +548,8 @@ S_bool_True:
   .string \"True\"
 S_bool_False:
   .string \"False\"
+S_Error_Message_Type:
+  .string \"Type of param is not compatible\"
 
 S_char_open_bracket:
   .string \"[\"
@@ -606,8 +685,18 @@ let rec compile_expr (e: Ast.texpr) =
       call "P_alloc_list" ++
       fold_i pop_e 0 nop el ++
       movq (reg rax) (reg rdi)
-  | TErange _ -> assert false (* TODO *)
-  | TEget (_, _) -> assert false (* TODO *)
+  | TErange e ->
+    compile_expr e ++ (* in %rdi *)
+    pushq (reg rdi) ++ (* save n on stack *)
+    call "P_range" ++ (* result in %rax *)
+    addq (imm 8) (reg rsp) ++ (* clean stack *)
+
+  movq (reg rax) (reg rdi) (* result in %rdi *)
+  | TEget (l, i) -> 
+      compile_expr l ++ (* in %rdi *)
+      compile_expr i ++ (* in %rsi *)
+      call "Get" ++
+      movq (reg rax) (reg rdi) (* result in %rdi *)
 
 let rec compile_stmt exit_lbl (s: Ast.tstmt) =
   match s with
