@@ -141,7 +141,7 @@ P_print:
 1:
       movq    8(%rdi), %rdi
       call    P_print_bool
-            movq    %rbp, %rsp
+      movq    %rbp, %rsp
       popq    %rbp
       ret
 B_eq:
@@ -269,7 +269,7 @@ P_alloc_bool: # The boolean have structure: [1 | 0/1] init with 0
       movq    $1, (%rax)  # tag of a boolean block
       movq    -8(%rbp), %rdi 
       movq    %rdi, 8(%rax)  
-        movq    %rbp, %rsp
+      movq    %rbp, %rsp
       popq    %rbp
       ret
           
@@ -323,7 +323,7 @@ P_alloc_list:
       movq    $4, (%rax)
       movq    -8(%rbp), %rdi
       movq    %rdi, 8(%rax)
-        movq    %rbp, %rsp
+      movq    %rbp, %rsp
       popq    %rbp
       ret
 
@@ -351,140 +351,131 @@ P_print_newline:
         movq    %rbp, %rsp
       popq    %rbp
       ret
-
-P_add:
-  pushq   %rbp
-  movq    %rsp, %rbp
-  cmpq    $3, (%rdi) # is first argument a string?
-  je      P_add_str
-  cmpq    $2, (%rdi) # is first argument an integer?
-  je      P_add_int
-        movq    %rbp, %rsp
-      popq    %rbp
-      ret
-
-P_add_int: # first argument in %rdi, second argument in %rsi
-  pushq   %rbp
-  movq    %rsp, %rbp
-      movq    8(%rdi), %rdi
-      addq    8(%rsi), %rdi
-      call    P_alloc_int
-        movq    %rbp, %rsp
-      popq    %rbp
-      ret
-
 F_len:
     pushq %rbp
     movq  %rsp, %rbp
 
     cmpq  $4, (%rdi)         #if list
-    je    .valid
+    je    TypeValid
     cmpq  $3, (%rdi)         # if string
-    je    .valid
-
-    # The e is not valid attribute
+    je    TypeValid
+TypeError:
     movq    $S_Error_Message_Type, %rdi
     xorq    %rax, %rax
     call    printf
     movq    $1,   %rdi
     call exit
-.valid:
+TypeValid:
     movq  8(%rdi), %rdi    # reads the lenght
     call P_alloc_int
     movq    %rbp, %rsp
     popq    %rbp
     ret
 
-
-P_range:
+P_add:
     pushq   %rbp
     movq    %rsp, %rbp
 
-    # Save n on stack (for loop limit)
-    pushq   %rdi
+    cmpq    $3, (%rdi)     # is a1 a string?
+    je      add_str
+    cmpq    $2, (%rdi)     # is a1 an integer?
+    jne     TypeError
+    cmpq    $2, (%rsi)     # is a2 an integer?
+    jne     TypeError
+    movq    8(%rdi), %r14  # load a1's value into %rbx
+    addq    8(%rsi), %r14  # add a2's value to %rbx
 
-    movq    %rdi, %rdi         # length = n
-    call    P_alloc_list       # returns pointer to list in %rax
-
-    # Store list pointer in rbx for use in loop
-    movq    %rax, %rbx
-
-    popq    %rcx
-
-    movq    $0, %rdx           # i = 0  
-.loop:
-    cmpq    %rdx, %rcx         # compare i and n
-    jge     .done              # if i >= n sai se do loop
-
-    # Calculate address of list[i]
-    movq    %rdx, %rsi         # i
-    shl     $3, %rsi           
-    addq    $16, %rsi          # offset for list data after header
-    addq    %rbx, %rsi         # address of list[i]
-
-    # Store integer object at list[i]
-    movq    $2, (%rsi)         # tag for int = 2
-    movq    %rdx, 8(%rsi)      # value = i
-
-    incq    %rdx              
-    jmp     .loop
-.done:
-    movq    %rbx, %rax        
-  
-P_add_str:
-    pushq   %rbp
-    movq    %rsp, %rbp
-
-    pushq   %rdi
-    pushq   %rsi
-
-    # load pointers to string contents
-    movq    8(%rbp), %rdi   # rdi = ptr str1 saved in stack frame
-    movq    16(%rbp), %rsi  # rsi = ptr str2 saved in stack frame
-
-    movq    8(%rdi), %rdi   # rdi = pointer content str1
-    movq    8(%rsi), %rsi   # rsi = pointer content str2
-
-    # strlen(str1)
-    movq    %rdi, %rax
-    call    strlen
-    movq    %rax, %rdx      # len1
-
-    # strlen(str2)
-    movq    %rsi, %rax
-    call    strlen
-    movq    %rax, %rcx      # len2
-
-    # malloc(len1 + len2 + 1)
-    movq    %rdx, %rax
-    addq    %rcx, %rax
-    addq    $1, %rax
-    movq    %rax, %rdi
+    movq    $16, %rdi
     call    malloc
+    testq   %rax, %rax
+    jz      malloc_failed
 
-    # strcpy new_buffer, str1
-    movq    %rax, %rdi          # destiny objctive
-    movq    8(%rbp), %rsi       # ptr str1 original (saved)
-    movq    8(%rsi), %rsi       # pointer str1
-    call    strcpy
+    movq    $2, (%rax)     # type = integer
+    movq    %r14, 8(%rax)  # store result value in new object
+P_add_done:
+    popq    %rbp
+    ret
 
-    # strcpy new_buffer + len1, str2
-    movq    %rax, %rdi
-    addq    %rdx, %rdi
-    movq    16(%rbp), %rsi    # ptr str2 original saved
-    movq    8(%rsi), %rsi       # pointer str2
-    call    strcpy
+add_str:
+    cmpq    $3, (%rsi)        # is a2 a string?
+    jne     TypeError
 
-    # buils the object
-    movq    $3, %rdi
-    movq    %rax, %rsi
-    call    P_alloc_str
+    movq    %rdi, %r12        # save s1
+    movq    %rsi, %r13        # save s2
 
-    addq    $16, %rsp         # clean the stack
+    movq    8(%r12), %r14     # length of s1
+    addq    8(%r13), %r14     # total length = s1 + s2
 
-        movq    %rbp, %rsp
-      popq    %rbp
-      ret
+    # allocate string object (16-byte header + data + null terminator)
+    movq    %r14, %rdi
+    addq    $17, %rdi         # 16-byte header + (length + 1)
+    call    malloc
+    testq   %rax, %rax
+    jz      malloc_failed
+    movq    %rax, %rbx        # new object → %rbx
+
+    # initialize object header
+    movq    $3, (%rbx)        # type = string
+    movq    %r14, 8(%rbx)     # store total length
+
+    # data section starts at offset 16
+    leaq    16(%rbx), %rdi    # destination address
+
+    leaq    16(%r12), %rsi    # s1 data address
+    movq    8(%r12), %rdx     # s1 length
+    testq   %rdx, %rdx        # is length 0?
+    jz      copy_s2           # skip copy if zero
+
+    call    my_memcpy         # copy s1 data
+
+    leaq    16(%rbx), %rdi    # reload destination base
+    addq    8(%r12), %rdi     # move past s1 data
+
+copy_s2:
+    leaq    16(%r13), %rsi    # s2 data address
+    movq    8(%r13), %rdx     # s2 length
+    testq   %rdx, %rdx        # is length 0?
+    jz      add_null          # skip copy if zero
+    call    my_memcpy         # copy s2 data
+
+add_null:
+    leaq    16(%rbx), %rax    # start of data section
+    addq    8(%rbx), %rax     # move to end
+    movb    $0, (%rax)        # add null terminator
+
+    movq    %rbx, %rax        # return new object
+    jmp     P_add_done
+
+my_memcpy:
+    pushq   %rbp
+    movq    %rsp, %rbp
+
+    testq   %rdx, %rdx
+    jz      memcpy_done
+    movq    %rdi, %rax        # save destination as return value
+
+
+    movq    %rdx, %rcx        # use rcx as counter
+
+cpy_by_byte:
+    movb    (%rsi), %r8b      # load byte from source
+    movb    %r8b, (%rdi)      # store byte to destination
+    incq    %rsi              # increment source pointer
+    incq    %rdi              # increment destination pointer
+    decq    %rcx              # decrement counter
+    jnz     cpy_by_byte       # loop if not zero
+
+memcpy_done:
+    popq    %rbp
+    ret
+
+
+malloc_failed:
+    leaq    S_Error_Message_Malloc(%rip), %rdi
+    xorq    %rax, %rax
+    call    printf
+    movq    $1, %rdi
+    call    exit
 
 P_sub_int: # first argument in %rdi, second argument in %rsi
       pushq   %rbp
@@ -531,7 +522,14 @@ P_mul_int:
         movq    %rbp, %rsp
       popq    %rbp
       ret
-
+index_out_of_bounds:
+      pushq   %rbp
+      movq    %rsp, %rbp
+      leaq S_Error_Message_Index(%rip), %rdi
+      xorq    %rax, %rax
+      call printf
+      movq $1, %rdi
+      call exit
 
 "
 
@@ -550,7 +548,10 @@ S_bool_False:
   .string \"False\"
 S_Error_Message_Type:
   .string \"Type of param is not compatible\"
-
+S_Error_Message_Malloc:
+  .string \"Memory allocation failed\"
+S_Error_Message_Index:
+  .string \"Index out of bounds\"
 S_char_open_bracket:
   .string \"[\"
 S_char_close_bracket:
@@ -644,7 +645,7 @@ let rec compile_expr (e: Ast.texpr) =
       movq (ind ~ofs rbp) (reg rdi)
   | TEbinop (binop, e1, e2) ->
      let op = match binop with
-        | Badd -> "P_add_int" (*TODO: suppose P_add*)
+        | Badd -> "P_add"
         | Bsub -> "P_sub_int"
         | Bmul -> "P_mul_int"
         | Bdiv -> "P_div_int"
@@ -656,7 +657,7 @@ let rec compile_expr (e: Ast.texpr) =
         | Bgt -> "B_gt"
         | Bge -> "B_ge"
         | Band ->"B_and"
-        | Bor ->"B_or"  
+        | Bor ->"B_or"
         | _ -> assert false  in
       compile_expr e1 ++ (* in %rdi *)
       pushq (reg rdi) ++
@@ -692,11 +693,22 @@ let rec compile_expr (e: Ast.texpr) =
     addq (imm 8) (reg rsp) ++ (* clean stack *)
 
   movq (reg rax) (reg rdi) (* result in %rdi *)
-  | TEget (l, i) -> 
-      compile_expr l ++ (* in %rdi *)
-      compile_expr i ++ (* in %rsi *)
-      call "Get" ++
-      movq (reg rax) (reg rdi) (* result in %rdi *)
+| TEget (e1, e2) ->
+    match e1, e2 with 
+    | TElist el, TEvar ei -> 
+      let l = TElist el in
+      let i = TEvar ei in
+      compile_expr l ++
+      pushq (reg rdi) ++
+      compile_expr i ++
+      movq (reg rdi) (reg rsi) ++
+      popq rdi ++
+      cmpq (imm (List.length el)) (reg rsi) ++
+      jge "index_out_of_bounds" ++
+      cmpq (imm 0) (reg rsi) ++
+      jl "index_out_of_bounds" ++
+      movq (ind ~ofs:16 ~index:rsi ~scale:8 rdi) (reg rdi)
+    | _, _ -> failwith "TEget: unsupported operand types"
 
 let rec compile_stmt exit_lbl (s: Ast.tstmt) =
   match s with
@@ -725,7 +737,7 @@ let rec compile_stmt exit_lbl (s: Ast.tstmt) =
       compile_expr e ++ call "P_print" ++ call "P_print_newline"
   | TSblock sl ->
       List.fold_left (fun c s -> c ++ compile_stmt exit_lbl s) nop sl
-  | TSfor (_, _, _) -> assert false (* TODO *)
+  | TSfor (v, r, s) -> assert false (* TODO *)
   | TSeval e ->
       compile_expr e
   | TSset (_, _, _) -> assert false (* TODO *)
