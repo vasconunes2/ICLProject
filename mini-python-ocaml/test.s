@@ -3,34 +3,84 @@
 main:
 	pushq %rbp
 	movq %rsp, %rbp
-	subq $16, %rsp
-	movq $S_1, %rdi
+	subq $8, %rsp
+	call F_foo
+	addq $0, %rsp
+	movq %rax, %rdi
 	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $S_2, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	call P_add
+	call F_foo
+	addq $0, %rsp
 	movq %rax, %rdi
 	call P_print
 	call P_print_newline
-	movq $1, %rdi
+	movq $3, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
 	pushq %rdi
 	movq $2, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_list
+	popq %rdi
+	movq %rdi, 16(%rax)
+	popq %rdi
+	movq %rdi, 24(%rax)
+	popq %rdi
+	movq %rdi, 32(%rax)
+	movq %rax, %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_list
+	popq %rdi
+	movq %rdi, 16(%rax)
+	popq %rdi
+	movq %rdi, 24(%rax)
+	popq %rdi
+	movq %rdi, 32(%rax)
+	movq %rax, %rdi
 	movq %rdi, %rsi
 	popq %rdi
-	call P_add
-	movq %rax, %rdi
-	movq %rdi, -16(%rbp)
-	movq -16(%rbp), %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
 	call P_print
 	call P_print_newline
 	xorq %rax, %rax
+	movq %rbp, %rsp
+	popq %rbp
+	ret
+F_foo:
+	pushq %rbp
+	movq %rsp, %rbp
+	subq $8, %rsp
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, -8(%rbp)
+	movq $C_None, %rax
+L_2:
 	movq %rbp, %rsp
 	popq %rbp
 	ret
@@ -54,6 +104,24 @@ P_print_None:
       movq    %rsp, %rbp
       andq    $-16, %rsp
       movq    $S_message_None, %rdi
+      xorq    %rax, %rax
+      call    printf
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
+P_print_list:
+      pushq   %rbp
+      movq    %rsp, %rbp
+      andq    $-16, %rsp
+      xorq    %rax, %rax
+      call    printf
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
+P_print_list_elem:
+      pushq   %rbp
+      movq    %rsp, %rbp
+      andq    $-16, %rsp
       xorq    %rax, %rax
       call    printf
       movq    %rbp, %rsp
@@ -153,11 +221,12 @@ P_print:
       popq    %rbp
       ret
 4:
-      jmp     End      
+      call    P_print_list
+      jmp     End
 3:
       leaq    16(%rdi), %rdi
       call    P_print_string
-            movq    %rbp, %rsp
+      movq    %rbp, %rsp
       popq    %rbp
       ret
 2:
@@ -173,126 +242,42 @@ P_print:
       movq    %rbp, %rsp
       popq    %rbp
       ret
-B_eq:
+P_equal_None:
+      movq $S_bool_True, %rdi
+      jmp P_equal_Done
+P_equal_int:
+      cmpq 8(%rdi), 8(%rsi)
+      sete  %al
+      movzbq %al, %rdi
+      jmp e_qual_Done
+P_equal_string:
+nop
+P_equal_list:
+nop
+P_equal:
       pushq   %rbp
       movq    %rsp, %rbp
+      cmpq    %rdi, %rsi # compare the two arguments
+      jne     End # if not equal, jump to End
+      testq   %rdi, %rdi # if rdi&rsi is 0 
+      jz      print_bool # args are all None,return True
+      cmpq    $1, %rdi
+      jz P_equal_int
       movq    8(%rdi), %rdi
       movq    8(%rsi), %rsi
-      cmpq    %rdi, %rsi
+      cmpq    %rdi, %rsi # compare value/len of 2 args
       sete    %al  #store the result in %al
       movzbq  %al, %rdi # zero extend %al to %rdi
+P_equal_Done:
+      nop
       call    P_alloc_bool # allocate a boolean
-      movq    %rbp, %rsp
-      popq    %rbp
-      ret
-B_neq:
-      pushq   %rbp
-      movq    %rsp, %rbp
-      movq    8(%rdi), %rdi
-      movq    8(%rsi), %rsi
-      cmpq    %rdi, %rsi
-      setne   %al  #store the result in %al
-      movzbq  %al, %rdi # zero extend %al to %rdi
-      call    P_alloc_bool # allocate a boolean
-      movq    %rbp, %rsp
-      popq    %rbp
-      ret
-B_lt:
-      pushq   %rbp
-      movq    %rsp, %rbp
-      movq    8(%rdi), %rdi
-      movq    8(%rsi), %rsi
-      cmpq    %rsi,%rdi 
-      setl    %al  #store the result in %al
-      movzbq  %al, %rdi # zero extend %al to %rdi
-      call    P_alloc_bool # allocate a boolean
-            movq    %rbp, %rsp
-      popq    %rbp
-      ret
-
-B_le:
-      pushq   %rbp
-      movq    %rsp, %rbp
-      movq    8(%rdi), %rdi
-      movq    8(%rsi), %rsi
-      cmpq    %rsi,%rdi 
-      setle   %al  #store the result in %al
-      movzbq  %al, %rdi # zero extend %al to %rdi
-      call    P_alloc_bool # allocate a boolean
-            movq    %rbp, %rsp
-      popq    %rbp
-      ret
-B_gt:
-      pushq   %rbp
-      movq    %rsp, %rbp
-      movq    8(%rdi), %rdi
-      movq    8(%rsi), %rsi
-      cmpq    %rsi,%rdi 
-      setg    %al  #store the result in %al
-      movzbq  %al, %rdi # zero extend %al to %rdi
-      call      P_alloc_bool # allocate a boolean
-      movq    %rbp, %rsp
-      popq    %rbp
-      ret
-B_ge:
-      pushq   %rbp
-      movq    %rsp, %rbp
-      movq    8(%rdi), %rdi
-      movq    8(%rsi), %rsi
-      cmpq    %rsi,%rdi 
-      setge   %al  #store the result in %al
-      movzbq  %al, %rdi # zero extend %al to %rdi
-      call    P_alloc_bool # allocate a boolean
-      movq    %rbp, %rsp
-      popq    %rbp
-      ret
-
-  B_and: 
-    pushq   %rbp
-    movq    %rsp, %rbp
-    cmpq    $0, (%rdi)
-    je      B_and_false
-    cmpq    $0, 8(%rdi)
-    je      B_and_false
-    movq    %rsi, %rax
-          movq    %rbp, %rsp
-      popq    %rbp
-      ret
-  B_and_false:
-    movq %rdi, %rax
-          movq    %rbp, %rsp
-      popq    %rbp
-      ret
-
-  B_or:
-    pushq   %rbp
-    movq    %rsp, %rbp
-    cmpq    $0, (%rdi)
-    je      B_or_true # if first argument is False, then return second
-    cmpq    $0, 8(%rdi)
-    je      B_or_true 
-    movq    %rdi, %rax # if first argument is True, then return first
-          movq    %rbp, %rsp
-      popq    %rbp
-      ret
-
-  B_or_true:
-    movq %rsi, %rax
-          movq    %rbp, %rsp
-      popq    %rbp
-      ret
-  
-
-End:
-      movq    %rbp, %rsp
-      popq    %rbp
-      ret
+      jmp E_test
 
 P_alloc_bool: # The boolean have structure: [1 | 0/1] init with 0
       pushq   %rbp
       movq    %rsp, %rbp
       pushq   %rdi        
-      andq    $-16, %rsp  
+      andq    $-16, %rsp
       movq    $16, %rdi   
       call    malloc     
       movq    $1, (%rax)  # tag of a boolean block
@@ -388,12 +373,14 @@ F_len:
     je    TypeValid
     cmpq  $3, (%rdi)         # if string
     je    TypeValid
+
 TypeError:
     movq    $S_Error_Message_Type, %rdi
     xorq    %rax, %rax
     call    printf
     movq    $1,   %rdi
     call exit
+
 TypeValid:
     movq  8(%rdi), %rdi    # reads the lenght
     call P_alloc_int
@@ -421,10 +408,7 @@ P_add:
 
     movq    $2, (%rax)     # type = integer
     movq    %r14, 8(%rax)  # store result value in new object
-P_add_done:
-    popq    %rbp
-    ret
-
+    jmp done
 add_str:
     cmpq    $3, (%rsi)        # is a2 a string?
     jne     TypeError
@@ -473,16 +457,15 @@ add_null:
     movb    $0, (%rax)        # add null terminator
 
     movq    %rbx, %rax        # return new object
-    jmp     P_add_done
+    jmp     done
 
 my_memcpy:
     pushq   %rbp
     movq    %rsp, %rbp
 
     testq   %rdx, %rdx
-    jz      memcpy_done
+    jz      done
     movq    %rdi, %rax        # save destination as return value
-
 
     movq    %rdx, %rcx        # use rcx as counter
 
@@ -494,7 +477,7 @@ cpy_by_byte:
     decq    %rcx              # decrement counter
     jnz     cpy_by_byte       # loop if not zero
 
-memcpy_done:
+done:
     popq    %rbp
     ret
 
@@ -595,9 +578,3 @@ C_False:
 C_True:
   .quad 1
   .quad 1
-S_2:
-	.quad 3, 1
-	.string "b"
-S_1:
-	.quad 3, 67
-	.string "1234567890abcdefghijklmnopqrstuvwxyz!@#$%^&*()_+-=[]{}|;':\",.<>?/~`"

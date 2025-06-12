@@ -30,6 +30,24 @@ P_print_None:
       movq    %rbp, %rsp
       popq    %rbp
       ret
+P_print_list:
+      pushq   %rbp
+      movq    %rsp, %rbp
+      andq    $-16, %rsp
+      xorq    %rax, %rax
+      call    printf
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
+P_print_list_elem:
+      pushq   %rbp
+      movq    %rsp, %rbp
+      andq    $-16, %rsp
+      xorq    %rax, %rax
+      call    printf
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
 Get:
     pushq   %rbp
     movq    %rsp, %rbp
@@ -124,11 +142,12 @@ P_print:
       popq    %rbp
       ret
 4:
-      jmp     End      
+      call    P_print_list
+      jmp     End
 3:
       leaq    16(%rdi), %rdi
       call    P_print_string
-            movq    %rbp, %rsp
+      movq    %rbp, %rsp
       popq    %rbp
       ret
 2:
@@ -144,126 +163,42 @@ P_print:
       movq    %rbp, %rsp
       popq    %rbp
       ret
-B_eq:
+P_equal_None:
+      movq $S_bool_True, %rdi
+      jmp P_equal_Done
+P_equal_int:
+      cmpq 8(%rdi), 8(%rsi)
+      sete  %al
+      movzbq %al, %rdi
+      jmp e_qual_Done
+P_equal_string:
+nop
+P_equal_list:
+nop
+P_equal:
       pushq   %rbp
       movq    %rsp, %rbp
+      cmpq    %rdi, %rsi # compare the two arguments
+      jne     End # if not equal, jump to End
+      testq   %rdi, %rdi # if rdi&rsi is 0 
+      jz      print_bool # args are all None,return True
+      cmpq    $1, %rdi
+      jz P_equal_int
       movq    8(%rdi), %rdi
-      movq    8(%rsi), %rsi
-      cmpq    %rdi, %rsi
+      movq    8(%rsi), %rsi 
+      cmpq    %rdi, %rsi # compare value/len of 2 args
       sete    %al  #store the result in %al
       movzbq  %al, %rdi # zero extend %al to %rdi
+P_equal_Done:
+      nop
       call    P_alloc_bool # allocate a boolean
-      movq    %rbp, %rsp
-      popq    %rbp
-      ret
-B_neq:
-      pushq   %rbp
-      movq    %rsp, %rbp
-      movq    8(%rdi), %rdi
-      movq    8(%rsi), %rsi
-      cmpq    %rdi, %rsi
-      setne   %al  #store the result in %al
-      movzbq  %al, %rdi # zero extend %al to %rdi
-      call    P_alloc_bool # allocate a boolean
-      movq    %rbp, %rsp
-      popq    %rbp
-      ret
-B_lt:
-      pushq   %rbp
-      movq    %rsp, %rbp
-      movq    8(%rdi), %rdi
-      movq    8(%rsi), %rsi
-      cmpq    %rsi,%rdi 
-      setl    %al  #store the result in %al
-      movzbq  %al, %rdi # zero extend %al to %rdi
-      call    P_alloc_bool # allocate a boolean
-            movq    %rbp, %rsp
-      popq    %rbp
-      ret
-
-B_le:
-      pushq   %rbp
-      movq    %rsp, %rbp
-      movq    8(%rdi), %rdi
-      movq    8(%rsi), %rsi
-      cmpq    %rsi,%rdi 
-      setle   %al  #store the result in %al
-      movzbq  %al, %rdi # zero extend %al to %rdi
-      call    P_alloc_bool # allocate a boolean
-            movq    %rbp, %rsp
-      popq    %rbp
-      ret
-B_gt:
-      pushq   %rbp
-      movq    %rsp, %rbp
-      movq    8(%rdi), %rdi
-      movq    8(%rsi), %rsi
-      cmpq    %rsi,%rdi 
-      setg    %al  #store the result in %al
-      movzbq  %al, %rdi # zero extend %al to %rdi
-      call      P_alloc_bool # allocate a boolean
-      movq    %rbp, %rsp
-      popq    %rbp
-      ret
-B_ge:
-      pushq   %rbp
-      movq    %rsp, %rbp
-      movq    8(%rdi), %rdi
-      movq    8(%rsi), %rsi
-      cmpq    %rsi,%rdi 
-      setge   %al  #store the result in %al
-      movzbq  %al, %rdi # zero extend %al to %rdi
-      call    P_alloc_bool # allocate a boolean
-      movq    %rbp, %rsp
-      popq    %rbp
-      ret
-
-  B_and: 
-    pushq   %rbp
-    movq    %rsp, %rbp
-    cmpq    $0, (%rdi)
-    je      B_and_false
-    cmpq    $0, 8(%rdi)
-    je      B_and_false
-    movq    %rsi, %rax
-          movq    %rbp, %rsp
-      popq    %rbp
-      ret
-  B_and_false:
-    movq %rdi, %rax
-          movq    %rbp, %rsp
-      popq    %rbp
-      ret
-
-  B_or:
-    pushq   %rbp
-    movq    %rsp, %rbp
-    cmpq    $0, (%rdi)
-    je      B_or_true # if first argument is False, then return second
-    cmpq    $0, 8(%rdi)
-    je      B_or_true 
-    movq    %rdi, %rax # if first argument is True, then return first
-          movq    %rbp, %rsp
-      popq    %rbp
-      ret
-
-  B_or_true:
-    movq %rsi, %rax
-          movq    %rbp, %rsp
-      popq    %rbp
-      ret
-  
-
-End:
-      movq    %rbp, %rsp
-      popq    %rbp
-      ret
+      jmp E_test
 
 P_alloc_bool: # The boolean have structure: [1 | 0/1] init with 0
       pushq   %rbp
       movq    %rsp, %rbp
       pushq   %rdi        
-      andq    $-16, %rsp  
+      andq    $-16, %rsp
       movq    $16, %rdi   
       call    malloc     
       movq    $1, (%rax)  # tag of a boolean block
@@ -359,12 +294,14 @@ F_len:
     je    TypeValid
     cmpq  $3, (%rdi)         # if string
     je    TypeValid
+
 TypeError:
     movq    $S_Error_Message_Type, %rdi
     xorq    %rax, %rax
     call    printf
     movq    $1,   %rdi
     call exit
+
 TypeValid:
     movq  8(%rdi), %rdi    # reads the lenght
     call P_alloc_int
@@ -392,10 +329,7 @@ P_add:
 
     movq    $2, (%rax)     # type = integer
     movq    %r14, 8(%rax)  # store result value in new object
-P_add_done:
-    popq    %rbp
-    ret
-
+    jmp done
 add_str:
     cmpq    $3, (%rsi)        # is a2 a string?
     jne     TypeError
@@ -444,16 +378,15 @@ add_null:
     movb    $0, (%rax)        # add null terminator
 
     movq    %rbx, %rax        # return new object
-    jmp     P_add_done
+    jmp     done
 
 my_memcpy:
     pushq   %rbp
     movq    %rsp, %rbp
 
     testq   %rdx, %rdx
-    jz      memcpy_done
+    jz      done
     movq    %rdi, %rax        # save destination as return value
-
 
     movq    %rdx, %rcx        # use rcx as counter
 
@@ -465,7 +398,7 @@ cpy_by_byte:
     decq    %rcx              # decrement counter
     jnz     cpy_by_byte       # loop if not zero
 
-memcpy_done:
+done:
     popq    %rbp
     ret
 
@@ -644,29 +577,85 @@ let rec compile_expr (e: Ast.texpr) =
       let ofs = x.v_ofs in
       movq (ind ~ofs rbp) (reg rdi)
   | TEbinop (binop, e1, e2) ->
-     let op = match binop with
-        | Badd -> "P_add"
-        | Bsub -> "P_sub_int"
-        | Bmul -> "P_mul_int"
-        | Bdiv -> "P_div_int"
-        | Bmod -> "P_mod_int"
-        | Beq -> "B_eq"
-        | Bneq -> "B_neq"
-        | Blt -> "B_lt"
-        | Ble -> "B_le"
-        | Bgt -> "B_gt"
-        | Bge -> "B_ge"
-        | Band ->"B_and"
-        | Bor ->"B_or"
-        | _ -> assert false  in
-      compile_expr e1 ++ (* in %rdi *)
-      pushq (reg rdi) ++
-      compile_expr e2 ++
-      movq (reg rdi) (reg rsi) ++ (* %rsi = e2 *)
-      popq rdi ++ (* %rdi = e1 *)
-      call op ++ (* result in %rax *)
-      movq (reg rax) (reg rdi)
-  | TEunop (_, _) -> assert false (* TODO *)
+      begin match binop with
+      | Band | Bor ->
+          let l_skip = new_label () in
+          let l_done = new_label () in
+          let jmp_cond = match binop with
+            | Band -> jz l_skip   (* if false, skip e2 *)
+            | Bor  -> jnz l_skip  (* if true, skip e2 *)
+            | _ -> assert false
+          in
+          compile_expr e1 ++
+          call "P_test" ++
+          testq (reg rax) (reg rax) ++
+          jmp_cond ++
+          compile_expr e2 ++
+          jmp l_done ++
+          label l_skip ++
+          nop ++
+          label l_done
+      | Beq | Bneq | Blt | Ble | Bgt | Bge ->
+           let ops = match binop with
+           | Beq ->     call "P_equal" ++
+                        testq (reg rax) (reg rax) ++
+                        sete (reg al) 
+            | Bneq -> call "P_not_equal" ++
+                        testq (reg rax) (reg rax) ++
+                        setne (reg al)
+            | Blt ->  call "P_less" ++
+                        testq (reg rax) (reg rax) ++
+                        setl (reg al)
+            | Ble ->  call "P_less_equal" ++
+                        testq (reg rax) (reg rax) ++
+                        setle (reg al)
+            | Bgt -> call "P_greater" ++
+                        testq (reg rax) (reg rax) ++
+                        setg (reg al)
+            | Bge -> call "P_greater_equal" ++
+                        testq (reg rax) (reg rax) ++
+                        setge (reg al) 
+            |_ -> assert false in
+        compile_expr e1 ++
+        pushq (reg rdi) ++
+        compile_expr e2 ++
+        movq (reg rdi) (reg rsi) ++
+        popq rdi ++
+        ops ++
+        movq (ilab  "C_True") (reg rdi) ++
+        movq (ilab "C_False") (reg rsi) ++
+        testb (reg al) (reg al) ++
+        cmovz (reg rsi) (reg rdi)
+    | Bneq ->
+        compile_expr e1 ++
+        pushq (reg rdi) ++
+        compile_expr e2 ++
+        movq (reg rdi) (reg rsi) ++
+        popq rdi ++
+        call "P_not_equal" ++
+        testq (reg rax) (reg rax) ++
+        setne (reg al) ++
+        movq (ilab  "C_True") (reg rdi) ++
+        movq (ilab "C_False") (reg rsi) ++
+        testb (reg al) (reg al) ++
+        cmovz (reg rsi) (reg rdi)
+    | _ ->
+        let op = match binop with
+          | Badd -> "P_add"
+          | Bsub -> "P_sub_int"
+          | Bmul -> "P_mul_int"
+          | Bdiv -> "P_div_int"
+          | Bmod -> "P_mod_int"
+          | _ -> assert false in
+        compile_expr e1 ++
+        pushq (reg rdi) ++
+        compile_expr e2 ++
+        movq (reg rdi) (reg rsi) ++
+        popq rdi ++ 
+        call op ++
+        movq (reg rax) (reg rdi)
+    end
+  | TEunop (_, _) -> nop (* TODO: implement unary operators *)
   | TEcall (fn, el) ->
       let push_arg e =
         compile_expr e ++
@@ -674,7 +663,7 @@ let rec compile_expr (e: Ast.texpr) =
       List.fold_left (fun a e -> push_arg e ++ a) nop el ++
       call ("F_" ^ fn.fn_name) ++
       addq (imm (8 * List.length el)) (reg rsp) ++
-      movq (reg rax) (reg rdi)
+      movq (reg rax) (reg rdi) 
   | TElist el ->
       let push_e acc e =
         compile_expr e ++ pushq (reg rdi) ++ acc in
@@ -694,8 +683,8 @@ let rec compile_expr (e: Ast.texpr) =
 
   movq (reg rax) (reg rdi) (* result in %rdi *)
 | TEget (e1, e2) ->
-    match e1, e2 with 
-    | TElist el, TEvar ei -> 
+    match e1, e2 with
+    | TElist el, TEvar ei ->
       let l = TElist el in
       let i = TEvar ei in
       compile_expr l ++
@@ -708,7 +697,15 @@ let rec compile_expr (e: Ast.texpr) =
       cmpq (imm 0) (reg rsi) ++
       jl "index_out_of_bounds" ++
       movq (ind ~ofs:16 ~index:rsi ~scale:8 rdi) (reg rdi)
-    | _, _ -> failwith "TEget: unsupported operand types"
+    | _,_ ->
+      compile_expr e1 ++ (* in %rdi *)
+      pushq (reg rdi) ++ (* save e1 on stack *)
+      compile_expr e2 ++ (* in %rdi *)
+      movq (reg rdi) (reg rsi) ++ (* %rsi = e2 *)
+      popq rdi ++ (* %rdi = e1 *)
+      call "Get" ++ (* result in %rax *)
+      movq (reg rax) (reg rdi)
+      
 
 let rec compile_stmt exit_lbl (s: Ast.tstmt) =
   match s with
@@ -763,7 +760,9 @@ let compile_tdef (fn, tstmt) =
   enter ++ (* classic entering function *)
   locals ++ (* move rsp according to the number of local vars *)
   body ++ (* body of the function *)
+  movq (ilab "C_None") (reg rax) ++
   label exit_lbl ++ (* introduce exit label *)
+  (*if the function have no return, then return None as implicitly*)
   leave (* leave function *)
 
 let compile_main (fn, tstmt) =

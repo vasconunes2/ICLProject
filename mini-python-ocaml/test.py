@@ -1,5 +1,5 @@
-x = "1234567890abcdefghijklmnopqrstuvwxyz!@#$%^&*()_+-=[]{}|;':\",.<>?/~`"
-print(x+"b")
-
-y = 1 + 2
-print(y)
+def foo():
+    x = 1
+y = foo()
+print(foo())
+print([1,2,3] == [1,2,3])

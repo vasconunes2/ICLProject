@@ -8,8 +8,9 @@ struct String{
   char* data;
 };
 void custom_cpy(struct String* dest, const struct String* src) {
-  while ((*dest++ = *src++));
-  *dest = '\0'; // Null-terminate the string
+  if (!dest || !src || !src->data) return; // Check for null pointers
+  dest->tag = src->tag; // Copy the tag
+  dest->length = src->length; // Copy the length
 }
 void custom_strcat(struct String* dest, const struct String* src) {
   if (!dest || !src) return; // Check for null pointers
