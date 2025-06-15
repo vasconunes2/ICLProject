@@ -3,36 +3,49 @@
 main:
 	pushq %rbp
 	movq %rsp, %rbp
-	subq $16, %rsp
-	movq $C_None, %rdi
-	movq %rdi, -8(%rbp)
-	movq $C_None, %rdi
-	movq %rdi, -16(%rbp)
-	movq $1, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
-	movq $1, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	call P_equal
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $1, %rdi
+	movq $3, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
 	pushq %rdi
 	movq $2, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_list
+	popq %rdi
+	movq %rdi, 16(%rax)
+	popq %rdi
+	movq %rdi, 24(%rax)
+	popq %rdi
+	movq %rdi, 32(%rax)
+	movq %rax, %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_list
+	popq %rdi
+	movq %rdi, 16(%rax)
+	popq %rdi
+	movq %rdi, 24(%rax)
+	popq %rdi
+	movq %rdi, 32(%rax)
+	movq %rax, %rdi
 	movq %rdi, %rsi
 	popq %rdi
 	call P_equal
@@ -44,51 +57,49 @@ main:
 	cmovz %rsi, %rdi
 	call P_print
 	call P_print_newline
-	movq $C_True, %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
 	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_list
 	popq %rdi
-	call P_equal
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $C_True, %rdi
-	pushq %rdi
-	movq $C_False, %rdi
-	movq %rdi, %rsi
+	movq %rdi, 16(%rax)
 	popq %rdi
-	call P_equal
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_2, %rdi
-	pushq %rdi
-	movq $S_1, %rdi
-	movq %rdi, %rsi
+	movq %rdi, 24(%rax)
 	popq %rdi
-	call P_equal
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_4, %rdi
+	movq %rdi, 32(%rax)
+	movq %rax, %rdi
 	pushq %rdi
-	movq $S_3, %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_list
+	popq %rdi
+	movq %rdi, 16(%rax)
+	popq %rdi
+	movq %rdi, 24(%rax)
+	popq %rdi
+	movq %rdi, 32(%rax)
+	movq %rax, %rdi
 	movq %rdi, %rsi
 	popq %rdi
 	call P_equal
@@ -276,13 +287,26 @@ P_equal_int:
 P_equal_string:
       cmpq    $3, (%rsi) # if rsi is string
       jne     P_equal_False # if rsi is not None, return False
-      movq 16(%rdi), %rdi # get the address of the first argument
-      movq 16(%rsi), %rsi # get the address of the second argument
-      leaq S_message_string(%rip), %rcx # load the format string for printing
-      call strcmp # compare the two strings
-      testq %rax, %rax # check if they are equal
-      je P_equal_True # if they are equal, return True
-      jmp P_equal_False # if they are not equal, return False
+      movq 8(%rdi), %rcx # get length of the first argument, keep it in rcx
+      movq 8(%rsi), %rdx # get the length of the second argument, keep it in rdx
+      cmpq %rcx, %rdx
+      jne P_equal_False # if  they have different lengths, return False
+      # now we compare the strings
+      leaq 16(%rdi), %rdi # rdi points to the first character of the first string
+      leaq 16(%rsi), %rsi # rsi points to the first character of the second string
+P_equal_string_loop:
+      testq %rcx, %rcx # check if we reached the end of the first string
+      je P_equal_True # if we reached the end, return True
+
+      movzbl (%rdi), %eax # load the first character of the first string
+      movzbl (%rsi), %ebx # load the first character of the second string
+      cmpb %al, %bl # compare the characters
+      jne P_equal_False # if they are not equal, return False
+      decq %rcx # move to the next character in the first string
+      incq %rdi # move to the next character in the first string
+      incq %rsi # move to the next character in the second string
+      jmp P_equal_string_loop # repeat the loop
+      
 P_equal_list:
 nop
 P_equal_None: # rdi is None already, check rsi 
@@ -624,15 +648,3 @@ C_False:
 C_True:
   .quad 1
   .quad 1
-S_2:
-	.quad 3, 5
-	.string "hello"
-S_3:
-	.quad 3, 5
-	.string "world"
-S_1:
-	.quad 3, 5
-	.string "hello"
-S_4:
-	.quad 3, 5
-	.string "hello"

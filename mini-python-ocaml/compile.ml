@@ -177,10 +177,26 @@ P_equal_int:
 P_equal_string:
       cmpq    $3, (%rsi) # if rsi is string
       jne     P_equal_False # if rsi is not None, return False
-        movq 8(%rdi), %rdi # get the value of the first argument
-      movq 8(%rsi), %rsi # get the value of the second argument
-      cmpq %rdi, %rsi
+      movq 8(%rdi), %rcx # get length of the first argument, keep it in rcx
+      movq 8(%rsi), %rdx # get the length of the second argument, keep it in rdx
+      cmpq %rcx, %rdx
+      jne P_equal_False # if  they have different lengths, return False
+      # now we compare the strings
+      leaq 16(%rdi), %rdi # rdi points to the first character of the first string
+      leaq 16(%rsi), %rsi # rsi points to the first character of the second string
+P_equal_string_loop:
+      testq %rcx, %rcx # check if we reached the end of the first string
+      je P_equal_True # if we reached the end, return True
+
+      movzbl (%rdi), %eax # load the first character of the first string
+      movzbl (%rsi), %ebx # load the first character of the second string
+      cmpb %al, %bl # compare the characters
       jne P_equal_False # if they are not equal, return False
+      decq %rcx # move to the next character in the first string
+      incq %rdi # move to the next character in the first string
+      incq %rsi # move to the next character in the second string
+      jmp P_equal_string_loop # repeat the loop
+      
 P_equal_list:
 nop
 P_equal_None: # rdi is None already, check rsi 
