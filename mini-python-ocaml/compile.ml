@@ -143,7 +143,9 @@ P_print:
       ret
 4:
       call    P_print_list
-      jmp     End
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
 3:
       leaq    16(%rdi), %rdi
       call    P_print_string
@@ -163,36 +165,57 @@ P_print:
       movq    %rbp, %rsp
       popq    %rbp
       ret
-P_equal_None:
-      movq $S_bool_True, %rdi
-      jmp P_equal_Done
 P_equal_int:
-      cmpq 8(%rdi), 8(%rsi)
-      sete  %al
-      movzbq %al, %rdi
-      jmp e_qual_Done
+      cmpq    $2, (%rsi) # if rsi is int 
+      jne     P_equal_False # if rsi is not None, return False
+      movq 8(%rdi), %rdi # get the value of the first argument
+      movq 8(%rsi), %rsi # get the value of the second argument
+      cmpq %rdi, %rsi
+      je P_equal_True # if they are equal, return True
+      jmp P_equal_False # if they are not equal, return False
+
 P_equal_string:
-nop
+      cmpq    $3, (%rsi) # if rsi is string
+      jne     P_equal_False # if rsi is not None, return False
+        movq 8(%rdi), %rdi # get the value of the first argument
+      movq 8(%rsi), %rsi # get the value of the second argument
+      cmpq %rdi, %rsi
+      jne P_equal_False # if they are not equal, return False
 P_equal_list:
 nop
+P_equal_None: # rdi is None already, check rsi 
+      cmpq    $0, (%rsi) # if rsi is None
+      jne     P_equal_False # if rsi is not None, return False
+      jmp     P_equal_True # if rsi is None, return True
 P_equal:
       pushq   %rbp
       movq    %rsp, %rbp
-      cmpq    %rdi, %rsi # compare the two arguments
-      jne     End # if not equal, jump to End
-      testq   %rdi, %rdi # if rdi&rsi is 0 
-      jz      print_bool # args are all None,return True
-      cmpq    $1, %rdi
-      jz P_equal_int
-      movq    8(%rdi), %rdi
-      movq    8(%rsi), %rsi 
-      cmpq    %rdi, %rsi # compare value/len of 2 args
-      sete    %al  #store the result in %al
-      movzbq  %al, %rdi # zero extend %al to %rdi
-P_equal_Done:
-      nop
-      call    P_alloc_bool # allocate a boolean
-      jmp E_test
+      pushq   %rdi # save first argument
+      pushq   %rsi # save second argument
+
+      
+      cmpq    $0, (%rdi) # if rdi is None
+      je      P_equal_None # args are all None,return True
+      cmpq    $1, (%rdi) # if rdi is a boolean
+      je      P_equal_int # if rdi is a boolean, print it
+      cmpq    $2, (%rdi) # if rdi is an integer
+      je      P_equal_int # if rdi is an integer, print it
+      cmpq    $3, (%rdi) # if rdi is a string
+      je      P_equal_string # if rdi is a string, print it
+      cmpq    $4, (%rdi) # if rdi is a list
+      je      P_equal_list # if rdi is a list, print it
+P_equal_End:
+      popq    %rsi # restore second argument
+      popq    %rdi # restore first argument
+      popq    %rbp # restore base pointer
+      ret
+
+P_equal_True:
+      movq    $0, %rax # if equal, return True
+      jmp    P_equal_End # jump to End
+P_equal_False:
+      movq    $1, %rax # if not equal, return False
+      jmp    P_equal_End # jump to End
 
 P_alloc_bool: # The boolean have structure: [1 | 0/1] init with 0
       pushq   %rbp
@@ -416,7 +439,7 @@ P_sub_int: # first argument in %rdi, second argument in %rsi
       movq    8(%rdi), %rdi
       subq    8(%rsi), %rdi
       call    P_alloc_int
-        movq    %rbp, %rsp
+      movq    %rbp, %rsp
       popq    %rbp
       ret
 
@@ -625,20 +648,7 @@ let rec compile_expr (e: Ast.texpr) =
         movq (ilab  "C_True") (reg rdi) ++
         movq (ilab "C_False") (reg rsi) ++
         testb (reg al) (reg al) ++
-        cmovz (reg rsi) (reg rdi)
-    | Bneq ->
-        compile_expr e1 ++
-        pushq (reg rdi) ++
-        compile_expr e2 ++
-        movq (reg rdi) (reg rsi) ++
-        popq rdi ++
-        call "P_not_equal" ++
-        testq (reg rax) (reg rax) ++
-        setne (reg al) ++
-        movq (ilab  "C_True") (reg rdi) ++
-        movq (ilab "C_False") (reg rsi) ++
-        testb (reg al) (reg al) ++
-        cmovz (reg rsi) (reg rdi)
+        cmovz (reg rsi) (reg rdi) 
     | _ ->
         let op = match binop with
           | Badd -> "P_add"

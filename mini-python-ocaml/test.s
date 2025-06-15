@@ -3,58 +3,17 @@
 main:
 	pushq %rbp
 	movq %rsp, %rbp
-	subq $8, %rsp
-	call F_foo
-	addq $0, %rsp
-	movq %rax, %rdi
+	subq $16, %rsp
+	movq $C_None, %rdi
 	movq %rdi, -8(%rbp)
-	call F_foo
-	addq $0, %rsp
-	movq %rax, %rdi
-	call P_print
-	call P_print_newline
-	movq $3, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
-	movq $2, %rdi
+	movq $C_None, %rdi
+	movq %rdi, -16(%rbp)
+	movq $1, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
 	pushq %rdi
 	movq $1, %rdi
 	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
-	movq $3, %rdi
-	call P_alloc_list
-	popq %rdi
-	movq %rdi, 16(%rax)
-	popq %rdi
-	movq %rdi, 24(%rax)
-	popq %rdi
-	movq %rdi, 32(%rax)
-	movq %rax, %rdi
-	pushq %rdi
-	movq $3, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
-	movq $2, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
-	movq $1, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
-	movq $3, %rdi
-	call P_alloc_list
-	popq %rdi
-	movq %rdi, 16(%rax)
-	popq %rdi
-	movq %rdi, 24(%rax)
-	popq %rdi
-	movq %rdi, 32(%rax)
 	movq %rax, %rdi
 	movq %rdi, %rsi
 	popq %rdi
@@ -67,20 +26,81 @@ main:
 	cmovz %rsi, %rdi
 	call P_print
 	call P_print_newline
-	xorq %rax, %rax
-	movq %rbp, %rsp
-	popq %rbp
-	ret
-F_foo:
-	pushq %rbp
-	movq %rsp, %rbp
-	subq $8, %rsp
 	movq $1, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
-	movq %rdi, -8(%rbp)
-	movq $C_None, %rax
-L_2:
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq $C_True, %rdi
+	pushq %rdi
+	movq $C_True, %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq $C_True, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq $S_2, %rdi
+	pushq %rdi
+	movq $S_1, %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq $S_4, %rdi
+	pushq %rdi
+	movq $S_3, %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	xorq %rax, %rax
 	movq %rbp, %rsp
 	popq %rbp
 	ret
@@ -222,7 +242,9 @@ P_print:
       ret
 4:
       call    P_print_list
-      jmp     End
+      movq    %rbp, %rsp
+      popq    %rbp
+      ret
 3:
       leaq    16(%rdi), %rdi
       call    P_print_string
@@ -242,36 +264,60 @@ P_print:
       movq    %rbp, %rsp
       popq    %rbp
       ret
-P_equal_None:
-      movq $S_bool_True, %rdi
-      jmp P_equal_Done
 P_equal_int:
-      cmpq 8(%rdi), 8(%rsi)
-      sete  %al
-      movzbq %al, %rdi
-      jmp e_qual_Done
+      cmpq    $2, (%rsi) # if rsi is int 
+      jne     P_equal_False # if rsi is not None, return False
+      movq 8(%rdi), %rdi # get the value of the first argument
+      movq 8(%rsi), %rsi # get the value of the second argument
+      cmpq %rdi, %rsi
+      je P_equal_True # if they are equal, return True
+      jmp P_equal_False # if they are not equal, return False
+
 P_equal_string:
-nop
+      cmpq    $3, (%rsi) # if rsi is string
+      jne     P_equal_False # if rsi is not None, return False
+      movq 16(%rdi), %rdi # get the address of the first argument
+      movq 16(%rsi), %rsi # get the address of the second argument
+      leaq S_message_string(%rip), %rcx # load the format string for printing
+      call strcmp # compare the two strings
+      testq %rax, %rax # check if they are equal
+      je P_equal_True # if they are equal, return True
+      jmp P_equal_False # if they are not equal, return False
 P_equal_list:
 nop
+P_equal_None: # rdi is None already, check rsi 
+      cmpq    $0, (%rsi) # if rsi is None
+      jne     P_equal_False # if rsi is not None, return False
+      jmp     P_equal_True # if rsi is None, return True
 P_equal:
       pushq   %rbp
       movq    %rsp, %rbp
-      cmpq    %rdi, %rsi # compare the two arguments
-      jne     End # if not equal, jump to End
-      testq   %rdi, %rdi # if rdi&rsi is 0 
-      jz      print_bool # args are all None,return True
-      cmpq    $1, %rdi
-      jz P_equal_int
-      movq    8(%rdi), %rdi
-      movq    8(%rsi), %rsi
-      cmpq    %rdi, %rsi # compare value/len of 2 args
-      sete    %al  #store the result in %al
-      movzbq  %al, %rdi # zero extend %al to %rdi
-P_equal_Done:
-      nop
-      call    P_alloc_bool # allocate a boolean
-      jmp E_test
+      pushq   %rdi # save first argument
+      pushq   %rsi # save second argument
+
+      
+      cmpq    $0, (%rdi) # if rdi is None
+      je      P_equal_None # args are all None,return True
+      cmpq    $1, (%rdi) # if rdi is a boolean
+      je      P_equal_int # if rdi is a boolean, print it
+      cmpq    $2, (%rdi) # if rdi is an integer
+      je      P_equal_int # if rdi is an integer, print it
+      cmpq    $3, (%rdi) # if rdi is a string
+      je      P_equal_string # if rdi is a string, print it
+      cmpq    $4, (%rdi) # if rdi is a list
+      je      P_equal_list # if rdi is a list, print it
+P_equal_End:
+      popq    %rsi # restore second argument
+      popq    %rdi # restore first argument
+      popq    %rbp # restore base pointer
+      ret
+
+P_equal_True:
+      movq    $0, %rax # if equal, return True
+      jmp    P_equal_End # jump to End
+P_equal_False:
+      movq    $1, %rax # if not equal, return False
+      jmp    P_equal_End # jump to End
 
 P_alloc_bool: # The boolean have structure: [1 | 0/1] init with 0
       pushq   %rbp
@@ -495,7 +541,7 @@ P_sub_int: # first argument in %rdi, second argument in %rsi
       movq    8(%rdi), %rdi
       subq    8(%rsi), %rdi
       call    P_alloc_int
-        movq    %rbp, %rsp
+      movq    %rbp, %rsp
       popq    %rbp
       ret
 
@@ -578,3 +624,15 @@ C_False:
 C_True:
   .quad 1
   .quad 1
+S_2:
+	.quad 3, 5
+	.string "hello"
+S_3:
+	.quad 3, 5
+	.string "world"
+S_1:
+	.quad 3, 5
+	.string "hello"
+S_4:
+	.quad 3, 5
+	.string "hello"
