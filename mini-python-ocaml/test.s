@@ -287,6 +287,7 @@ P_equal_int:
 P_equal_string:
       cmpq    $3, (%rsi) # if rsi is string
       jne     P_equal_False # if rsi is not None, return False
+
       movq 8(%rdi), %rcx # get length of the first argument, keep it in rcx
       movq 8(%rsi), %rdx # get the length of the second argument, keep it in rdx
       cmpq %rcx, %rdx
@@ -308,7 +309,35 @@ P_equal_string_loop:
       jmp P_equal_string_loop # repeat the loop
       
 P_equal_list:
-nop
+      cmpq    $4, (%rsi) # if rsi is list
+      jne     P_equal_False # if rsi is not None, return False
+
+      movq 8(%rdi), %rcx # get the length of the first argument, keep it in rcx
+      movq 8(%rsi), %rdx # get the length of the second argument, keep it in rdx
+      cmpq %rcx, %rdx
+      jne P_equal_False # if they have different lengths, return False
+      
+      movq $0, %rbx # use rbx as a counter for the loop
+      
+P_equal_list_loop:
+      cmpq %rbx, %rcx
+      je P_equal_True # if we reached the end, return True
+
+      movq 16(%rdi, %rbx, 8), %r10  # r10 = left[i]
+      movq 16(%rsi, %rbx, 8), %r11  # r11 = right[i]
+      pushq %rdi # save rdi
+      pushq %rsi # save rsi
+      movq %r10, %rdi # move the first element of the first list to rdi
+      movq %r11, %rsi # move the first element of the second list to rsi
+      call P_equal # compare the first elements of both lists
+      popq %rsi # restore rsi
+      popq %rdi # restore rdi
+      testq %rax, %rax
+      jne P_equal_False           
+
+      incq %rbx
+      jmp P_equal_list_loop
+
 P_equal_None: # rdi is None already, check rsi 
       cmpq    $0, (%rsi) # if rsi is None
       jne     P_equal_False # if rsi is not None, return False
