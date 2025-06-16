@@ -208,80 +208,79 @@ cmp_jump_table:
     .quad do_ge_f
 
 
-do_eq:   je P_Biop_True; ret
-do_ne:   jne P_Biop_True; ret
-do_lt:   jl P_Biop_True; ret
-do_le:   jle P_Biop_True; ret
-do_gt:   jg P_Biop_True; ret
-do_ge:   jge P_Biop_True; ret
-do_eq_f: jne P_Biop_False; ret
-do_ne_f: je P_Biop_False; ret
-do_lt_f: jge P_Biop_False; ret
-do_le_f: jg P_Biop_False; ret
-do_gt_f: jle P_Biop_False; ret
-do_ge_f: jl P_Biop_False; ret
+do_eq:   je P_Biop_End; ret
+do_ne:   jne P_Biop_End; ret
+do_lt:   jl P_Biop_End; ret
+do_le:   jle P_Biop_End; ret
+do_gt:   jg P_Biop_End; ret
+do_ge:   jge P_Biop_End; ret
+do_eq_f: jne P_Biop_End; ret
+do_ne_f: je P_Biop_End; ret
+do_lt_f: jge P_Biop_End; ret
+do_le_f: jg P_Biop_End; ret
+do_gt_f: jle P_Biop_End; ret
+do_ge_f: jl P_Biop_End; ret
 
 P_Biop_cmp:
     leaq cmp_jump_table(%rip), %r13
-    movq (%r13, %r12, 8), %rax
-    jmp *%rax
+    movq (%r13, %r12, 8), %r14
+    jmp *%r14
 P_Biop_cmp_Alt:
     movq %r12, %r13
     addq $6, %r13
     leaq cmp_jump_table(%rip), %r14
-    movq (%r14, %r13, 8), %rax       
-    jmp *%rax
-P_Biop_int_neq:
+    movq (%r14, %r13, 8), %r14       
+    jmp *%r14
+P_Biop_check_ops:
       cmpq  $1,  %r12 # if r12 is neq
       je P_Biop_True # if r12 is neq, return True
       cmpq  $0,  %r12 # if r12 is eq
-      je P_Biop_True # if r12 is eq, return False
-      jmp TypeError # if r12 is not a boolean, raise TypeError
+      jne TypeError # if r12 is eq, return False
+      jmp P_Biop_True # if r12 is eq, return False
 
 P_Biop_int:
       cmpq    $2, (%rsi) # if rsi is int
-      jne     P_Biop_int_neq
+      jne     P_Biop_check_ops
       movq 8(%rdi), %rdi # get the value of the first argument
       movq 8(%rsi), %rsi # get the value of the second argument
       movq %rdi, %rax # move the value of the first argument to rax
       subq %rsi, %rax # subtract the value of the second argument from rax
       jmp P_Biop_End
+
 P_Biop_Bool:
       cmpq    $1, (%rsi) # if rsi is bool
-      jne     P_Biop_False # if rsi is not a boolean, return False
+      jne     P_Biop_check_ops # if rsi is not a boolean, return False
       movq 8(%rdi), %rdi # get the value of the first argument
       movq 8(%rsi), %rsi # get the value of the second argument
+      movq %rdi, %rax # move the value of the first argument to rax
       subq %rsi, %rax # subtract the value of the second argument from rax
       jmp P_Biop_End
 
 P_Biop_string:
       cmpq    $3, (%rsi) # if rsi is string
-      jne     P_Biop_False 
-
+      jne     P_Biop_check_ops # if rsi is not a string, check the operator
       movq 8(%rdi), %rcx # get length of the first argument, keep it in rcx
       movq 8(%rsi), %rdx # get the length of the second argument, keep it in rdx
-      cmpq %rcx, %rdx
-      jne P_Biop_False # if  they have different lengths, return False
+
       # now we compare the strings
       leaq 16(%rdi), %rdi # rdi points to the first character of the first string
       leaq 16(%rsi), %rsi # rsi points to the first character of the second string
-
 P_Biop_string_loop:
       testq %rcx, %rcx # check if we reached the end of the first string
-      je P_Biop_True # if we reached the end, return True
-
+      call P_Biop_cmp # compare the characters at rdi and rsi
       movzbl (%rdi), %eax # temp1 = rdi[0] 
       movzbl (%rsi), %ebx #  temp2 = rsi[0]
-      cmpb %al, %bl # 
-      jne P_Biop_False # if temp1 !ops temp2
+      subl %ebx, %eax # subtract the second character from the first
+      movslq %eax, %rax  # sign-extend the result to rax
+      call P_Biop_cmp_Alt # compare the characters
       decq %rcx # move to the next character in the first string
       incq %rdi # move to the next character in the first string
       incq %rsi # move to the next character in the second string
       jmp P_Biop_string_loop # repeat the loop
-      
+
 P_Biop_list:
       cmpq    $4, (%rsi) # if rsi is list
-      jne     P_Biop_False 
+      jne     P_Biop_check_ops
 
       movq 8(%rdi), %rcx # len1 = arg1 length
       movq 8(%rsi), %rdx # len2 = arg2 length
@@ -315,7 +314,7 @@ P_Biop_None: # rdi is None already, check rsi
 P_Biop:
       pushq   %rbp
       movq    %rsp, %rbp
-
+      xorq %rax, %rax  
       cmpq    $2, (%rdi) # if rdi is an integer
       je      P_Biop_int # 
       cmpq    $3, (%rdi) # if rdi is a string
