@@ -32,18 +32,19 @@ P_print_None:
       ret
 P_print_list:
     pushq   %rbp
-    movq    %rsp, %rbp
-    andq    $-16, %rsp
+    movq    %rsp, %rbp 
     pushq   %rdi
-
-    leaq    S_char_open_bracket(%rip), %rdi
     xorq    %rax, %rax
+    leaq    S_char_open_bracket(%rip), %rdi 
     call    printf
 
     popq    %rdi
+    pushq   %rdi
+    
     movq    8(%rdi), %rsi
     cmpq    $0, %rsi
     je      .print_list_end
+
     movq    $0, %rax
 
 .print_list_loop:
@@ -51,28 +52,43 @@ P_print_list:
     je      .print_list_end
 
     movq    %rax, %rcx
-    shl     $3, %rcx
-    addq    $16, %rcx
-    addq    %rdi, %rcx
-    movq    (%rcx), %rdi
+    shlq    $3, %rcx
+    leaq    16(%rdi, %rcx), %rcx
+    
+    pushq   %rdi
+    pushq   %rsi
+    pushq   %rax
+    
+    movq    (%rcx), %rdi 
     call    P_print
-
+    
+    popq    %rax
+    popq    %rsi
+    popq    %rdi
+    
     incq    %rax
     cmpq    %rax, %rsi
-    je      .print_list_loop_continue
-
+    je      .print_list_end
+    
+    pushq   %rdi
+    pushq   %rsi
+    pushq   %rax
     leaq    S_string_comma_space(%rip), %rdi
     xorq    %rax, %rax
     call    printf
-
-.print_list_loop_continue:
+    popq    %rax
+    popq    %rsi
+    popq    %rdi
+    
     jmp     .print_list_loop
 
 .print_list_end:
+    pushq   %rdi
     leaq    S_char_close_bracket(%rip), %rdi
     xorq    %rax, %rax
     call    printf
-
+    popq    %rdi
+    
     movq    %rbp, %rsp
     popq    %rbp
     ret
@@ -93,14 +109,15 @@ Get:
     movq    16(%rdi), %rdx       # rdx = obj.data_ptr
 
     movq    (%rdx, %rcx, 8), %rax
-            movq    %rbp, %rsp
-      popq    %rbp
-      ret
+
+    movq    %rbp, %rsp
+    popq    %rbp
+    ret
 Get_IndexError:
     xorq    %rax, %rax
-          movq    %rbp, %rsp
-      popq    %rbp
-      ret
+    movq    %rbp, %rsp
+    popq    %rbp
+    ret
 P_print_string:
       pushq   %rbp
       movq    %rsp, %rbp
@@ -118,7 +135,7 @@ P_print_int:
       movq    %rsp, %rbp
       andq    $-16, %rsp
       movq    %rdi, %rsi
-      leaq S_message_int(%rip), %rdi
+      leaq    S_message_int(%rip), %rdi
       xorq    %rax, %rax
       call    printf
       movq    %rbp, %rsp
@@ -142,7 +159,7 @@ Ret_True:
       movq    $S_bool_True, %rdi
       xorq    %rax, %rax
       call    printf
-            movq    %rbp, %rsp
+      movq    %rbp, %rsp
       popq    %rbp
       ret
 
@@ -193,44 +210,7 @@ P_print:
       movq    %rbp, %rsp
       popq    %rbp
       ret
-cmp_jump_table: 
-    .quad do_eq
-    .quad do_ne
-    .quad do_lt
-    .quad do_le
-    .quad do_gt
-    .quad do_ge
-    .quad do_eq_f
-    .quad do_ne_f
-    .quad do_lt_f
-    .quad do_le_f
-    .quad do_gt_f
-    .quad do_ge_f
 
-
-do_eq:   je P_Biop_End; ret
-do_ne:   jne P_Biop_End; ret
-do_lt:   jl P_Biop_End; ret
-do_le:   jle P_Biop_End; ret
-do_gt:   jg P_Biop_End; ret
-do_ge:   jge P_Biop_End; ret
-do_eq_f: jne P_Biop_End; ret
-do_ne_f: je P_Biop_End; ret
-do_lt_f: jge P_Biop_End; ret
-do_le_f: jg P_Biop_End; ret
-do_gt_f: jle P_Biop_End; ret
-do_ge_f: jl P_Biop_End; ret
-
-P_Biop_cmp:
-    leaq cmp_jump_table(%rip), %r13
-    movq (%r13, %r12, 8), %r14
-    jmp *%r14
-P_Biop_cmp_Alt:
-    movq %r12, %r13
-    addq $6, %r13
-    leaq cmp_jump_table(%rip), %r14
-    movq (%r14, %r13, 8), %r14       
-    jmp *%r14
 P_Biop_check_ops:
       cmpq  $1,  %r12 # if r12 is neq
       je P_Biop_True # if r12 is neq, return True
@@ -256,23 +236,26 @@ P_Biop_Bool:
       subq %rsi, %rax # subtract the value of the second argument from rax
       jmp P_Biop_End
 
+
 P_Biop_string:
       cmpq    $3, (%rsi) # if rsi is string
       jne     P_Biop_check_ops # if rsi is not a string, check the operator
-      movq 8(%rdi), %rcx # get length of the first argument, keep it in rcx
-      movq 8(%rsi), %rdx # get the length of the second argument, keep it in rdx
+      movq 8(%rdi), %rax # get length of the first argument, keep it in rcx
+      cmpq $0, %rax # check if the first string is empty
+      je P_Biop_False # if it is empty, return False
 
       # now we compare the strings
       leaq 16(%rdi), %rdi # rdi points to the first character of the first string
       leaq 16(%rsi), %rsi # rsi points to the first character of the second string
 P_Biop_string_loop:
       testq %rcx, %rcx # check if we reached the end of the first string
-      call P_Biop_cmp # compare the characters at rdi and rsi
-      movzbl (%rdi), %eax # temp1 = rdi[0] 
+
+
+        movzbl (%rdi), %eax # temp1 = rdi[0] 
       movzbl (%rsi), %ebx #  temp2 = rsi[0]
       subl %ebx, %eax # subtract the second character from the first
       movslq %eax, %rax  # sign-extend the result to rax
-      call P_Biop_cmp_Alt # compare the characters
+
       decq %rcx # move to the next character in the first string
       incq %rdi # move to the next character in the first string
       incq %rsi # move to the next character in the second string
@@ -314,7 +297,6 @@ P_Biop_None: # rdi is None already, check rsi
 P_Biop:
       pushq   %rbp
       movq    %rsp, %rbp
-      xorq %rax, %rax  
       cmpq    $2, (%rdi) # if rdi is an integer
       je      P_Biop_int # 
       cmpq    $3, (%rdi) # if rdi is a string
@@ -750,19 +732,16 @@ let rec compile_expr (e: Ast.texpr) =
                         call "P_Biop" ++
                         testq (reg rax) (reg rax) ++
                         setne (reg al)
-            | Blt ->   movq (imm 2) (reg r12) ++
-                        call "P_Biop" ++
+            | Blt ->     call "P_Biop" ++
                         testq (reg rax) (reg rax) ++
                         setl (reg al)
-            | Ble ->   movq (imm 3) (reg r12) ++
-                        call "P_Biop" ++
+            | Ble ->   call "P_Biop" ++
                         testq (reg rax) (reg rax) ++
                         setle (reg al)
-            | Bgt ->   movq (imm 4) (reg r12) ++
-                        call "P_Biop" ++
+            | Bgt ->         call "P_Biop" ++
                         testq (reg rax) (reg rax) ++
                         setg (reg al)
-            | Bge ->   movq (imm 5) (reg r12) ++
+            | Bge ->   
                         call "P_Biop" ++
                         testq (reg rax) (reg rax) ++
                         setge (reg al)

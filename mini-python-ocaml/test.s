@@ -3,965 +3,106 @@
 main:
 	pushq %rbp
 	movq %rsp, %rbp
-	subq $8, %rsp
+	movq $0, %rdi
+	call P_alloc_list
+	movq %rax, %rdi
+	call P_print
+	call P_print_newline
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_list
+	popq %rdi
+	movq %rdi, 16(%rax)
+	popq %rdi
+	movq %rdi, 24(%rax)
+	popq %rdi
+	movq %rdi, 32(%rax)
+	movq %rax, %rdi
+	call P_print
+	call P_print_newline
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_list
+	popq %rdi
+	movq %rdi, 16(%rax)
+	popq %rdi
+	movq %rdi, 24(%rax)
+	movq %rax, %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_list
+	popq %rdi
+	movq %rdi, 16(%rax)
+	popq %rdi
+	movq %rdi, 24(%rax)
+	popq %rdi
+	movq %rdi, 32(%rax)
+	movq %rax, %rdi
+	call P_print
+	call P_print_newline
 	movq $S_1, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_3, %rdi
 	pushq %rdi
-	movq $S_2, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
 	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_4, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_6, %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
 	pushq %rdi
-	movq $S_5, %rdi
-	movq %rdi, %rsi
+	movq $2, %rdi
+	call P_alloc_list
 	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
+	movq %rdi, 16(%rax)
+	popq %rdi
+	movq %rdi, 24(%rax)
+	movq %rax, %rdi
 	pushq %rdi
-	movq $C_False, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_7, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_9, %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
 	pushq %rdi
-	movq $S_8, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
 	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
+	movq $4, %rdi
+	call P_alloc_list
 	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_10, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_12, %rdi
-	pushq %rdi
-	movq $S_11, %rdi
-	movq %rdi, %rsi
+	movq %rdi, 16(%rax)
 	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
+	movq %rdi, 24(%rax)
 	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_13, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_15, %rdi
-	pushq %rdi
-	movq $S_14, %rdi
-	movq %rdi, %rsi
+	movq %rdi, 32(%rax)
 	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_False, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_16, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_18, %rdi
-	pushq %rdi
-	movq $S_17, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $1, %r12
-	call P_Biop
-	testq %rax, %rax
-	setne %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_False, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_19, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_21, %rdi
-	pushq %rdi
-	movq $S_20, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $1, %r12
-	call P_Biop
-	testq %rax, %rax
-	setne %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_22, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_24, %rdi
-	pushq %rdi
-	movq $S_23, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $1, %r12
-	call P_Biop
-	testq %rax, %rax
-	setne %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_False, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_25, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_27, %rdi
-	pushq %rdi
-	movq $S_26, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $1, %r12
-	call P_Biop
-	testq %rax, %rax
-	setne %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_False, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_28, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_30, %rdi
-	pushq %rdi
-	movq $S_29, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $1, %r12
-	call P_Biop
-	testq %rax, %rax
-	setne %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_31, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_33, %rdi
-	pushq %rdi
-	movq $S_32, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $2, %r12
-	call P_Biop
-	testq %rax, %rax
-	setl %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_34, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_36, %rdi
-	pushq %rdi
-	movq $S_35, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $2, %r12
-	call P_Biop
-	testq %rax, %rax
-	setl %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_37, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_39, %rdi
-	pushq %rdi
-	movq $S_38, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $2, %r12
-	call P_Biop
-	testq %rax, %rax
-	setl %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_40, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_42, %rdi
-	pushq %rdi
-	movq $S_41, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $2, %r12
-	call P_Biop
-	testq %rax, %rax
-	setl %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_43, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_45, %rdi
-	pushq %rdi
-	movq $S_44, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $2, %r12
-	call P_Biop
-	testq %rax, %rax
-	setl %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_46, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_48, %rdi
-	pushq %rdi
-	movq $S_47, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $3, %r12
-	call P_Biop
-	testq %rax, %rax
-	setle %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_49, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_51, %rdi
-	pushq %rdi
-	movq $S_50, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $3, %r12
-	call P_Biop
-	testq %rax, %rax
-	setle %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_52, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_54, %rdi
-	pushq %rdi
-	movq $S_53, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $3, %r12
-	call P_Biop
-	testq %rax, %rax
-	setle %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_55, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_57, %rdi
-	pushq %rdi
-	movq $S_56, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $3, %r12
-	call P_Biop
-	testq %rax, %rax
-	setle %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_58, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_60, %rdi
-	pushq %rdi
-	movq $S_59, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $3, %r12
-	call P_Biop
-	testq %rax, %rax
-	setle %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_61, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_63, %rdi
-	pushq %rdi
-	movq $S_62, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $4, %r12
-	call P_Biop
-	testq %rax, %rax
-	setg %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_64, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_66, %rdi
-	pushq %rdi
-	movq $S_65, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $4, %r12
-	call P_Biop
-	testq %rax, %rax
-	setg %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_67, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_69, %rdi
-	pushq %rdi
-	movq $S_68, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $4, %r12
-	call P_Biop
-	testq %rax, %rax
-	setg %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_70, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_72, %rdi
-	pushq %rdi
-	movq $S_71, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $4, %r12
-	call P_Biop
-	testq %rax, %rax
-	setg %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_73, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_75, %rdi
-	pushq %rdi
-	movq $S_74, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $4, %r12
-	call P_Biop
-	testq %rax, %rax
-	setg %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_76, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_78, %rdi
-	pushq %rdi
-	movq $S_77, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $5, %r12
-	call P_Biop
-	testq %rax, %rax
-	setge %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_79, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_81, %rdi
-	pushq %rdi
-	movq $S_80, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $5, %r12
-	call P_Biop
-	testq %rax, %rax
-	setge %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_82, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_84, %rdi
-	pushq %rdi
-	movq $S_83, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $5, %r12
-	call P_Biop
-	testq %rax, %rax
-	setge %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_85, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_87, %rdi
-	pushq %rdi
-	movq $S_86, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $5, %r12
-	call P_Biop
-	testq %rax, %rax
-	setge %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_88, %rdi
-	call P_print
-	call P_print_newline
-	movq $S_90, %rdi
-	pushq %rdi
-	movq $S_89, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $5, %r12
-	call P_Biop
-	testq %rax, %rax
-	setge %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $C_True, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	movq $0, %r12
-	call P_Biop
-	testq %rax, %rax
-	sete %al
-	movq $C_True, %rdi
-	movq $C_False, %rsi
-	testb %al, %al
-	cmovz %rsi, %rdi
+	movq %rdi, 40(%rax)
+	movq %rax, %rdi
 	call P_print
 	call P_print_newline
 	xorq %rax, %rax
@@ -995,18 +136,19 @@ P_print_None:
       ret
 P_print_list:
     pushq   %rbp
-    movq    %rsp, %rbp
-    andq    $-16, %rsp
+    movq    %rsp, %rbp 
     pushq   %rdi
-
-    leaq    S_char_open_bracket(%rip), %rdi
     xorq    %rax, %rax
+    leaq    S_char_open_bracket(%rip), %rdi 
     call    printf
 
     popq    %rdi
+    pushq   %rdi
+    
     movq    8(%rdi), %rsi
     cmpq    $0, %rsi
     je      .print_list_end
+
     movq    $0, %rax
 
 .print_list_loop:
@@ -1014,28 +156,43 @@ P_print_list:
     je      .print_list_end
 
     movq    %rax, %rcx
-    shl     $3, %rcx
-    addq    $16, %rcx
-    addq    %rdi, %rcx
-    movq    (%rcx), %rdi
+    shlq    $3, %rcx
+    leaq    16(%rdi, %rcx), %rcx
+    
+    pushq   %rdi
+    pushq   %rsi
+    pushq   %rax
+    
+    movq    (%rcx), %rdi 
     call    P_print
-
+    
+    popq    %rax
+    popq    %rsi
+    popq    %rdi
+    
     incq    %rax
     cmpq    %rax, %rsi
-    je      .print_list_loop_continue
-
+    je      .print_list_end
+    
+    pushq   %rdi
+    pushq   %rsi
+    pushq   %rax
     leaq    S_string_comma_space(%rip), %rdi
     xorq    %rax, %rax
     call    printf
-
-.print_list_loop_continue:
+    popq    %rax
+    popq    %rsi
+    popq    %rdi
+    
     jmp     .print_list_loop
 
 .print_list_end:
+    pushq   %rdi
     leaq    S_char_close_bracket(%rip), %rdi
     xorq    %rax, %rax
     call    printf
-
+    popq    %rdi
+    
     movq    %rbp, %rsp
     popq    %rbp
     ret
@@ -1056,14 +213,15 @@ Get:
     movq    16(%rdi), %rdx       # rdx = obj.data_ptr
 
     movq    (%rdx, %rcx, 8), %rax
-            movq    %rbp, %rsp
-      popq    %rbp
-      ret
+
+    movq    %rbp, %rsp
+    popq    %rbp
+    ret
 Get_IndexError:
     xorq    %rax, %rax
-          movq    %rbp, %rsp
-      popq    %rbp
-      ret
+    movq    %rbp, %rsp
+    popq    %rbp
+    ret
 P_print_string:
       pushq   %rbp
       movq    %rsp, %rbp
@@ -1081,7 +239,7 @@ P_print_int:
       movq    %rsp, %rbp
       andq    $-16, %rsp
       movq    %rdi, %rsi
-      leaq S_message_int(%rip), %rdi
+      leaq    S_message_int(%rip), %rdi
       xorq    %rax, %rax
       call    printf
       movq    %rbp, %rsp
@@ -1105,7 +263,7 @@ Ret_True:
       movq    $S_bool_True, %rdi
       xorq    %rax, %rax
       call    printf
-            movq    %rbp, %rsp
+      movq    %rbp, %rsp
       popq    %rbp
       ret
 
@@ -1156,44 +314,7 @@ P_print:
       movq    %rbp, %rsp
       popq    %rbp
       ret
-cmp_jump_table: 
-    .quad do_eq
-    .quad do_ne
-    .quad do_lt
-    .quad do_le
-    .quad do_gt
-    .quad do_ge
-    .quad do_eq_f
-    .quad do_ne_f
-    .quad do_lt_f
-    .quad do_le_f
-    .quad do_gt_f
-    .quad do_ge_f
 
-
-do_eq:   je P_Biop_End; ret
-do_ne:   jne P_Biop_End; ret
-do_lt:   jl P_Biop_End; ret
-do_le:   jle P_Biop_End; ret
-do_gt:   jg P_Biop_End; ret
-do_ge:   jge P_Biop_End; ret
-do_eq_f: jne P_Biop_End; ret
-do_ne_f: je P_Biop_End; ret
-do_lt_f: jge P_Biop_End; ret
-do_le_f: jg P_Biop_End; ret
-do_gt_f: jle P_Biop_End; ret
-do_ge_f: jl P_Biop_End; ret
-
-P_Biop_cmp:
-    leaq cmp_jump_table(%rip), %r13
-    movq (%r13, %r12, 8), %r14
-    jmp *%r14
-P_Biop_cmp_Alt:
-    movq %r12, %r13
-    addq $6, %r13
-    leaq cmp_jump_table(%rip), %r14
-    movq (%r14, %r13, 8), %r14       
-    jmp *%r14
 P_Biop_check_ops:
       cmpq  $1,  %r12 # if r12 is neq
       je P_Biop_True # if r12 is neq, return True
@@ -1219,23 +340,26 @@ P_Biop_Bool:
       subq %rsi, %rax # subtract the value of the second argument from rax
       jmp P_Biop_End
 
+
 P_Biop_string:
       cmpq    $3, (%rsi) # if rsi is string
       jne     P_Biop_check_ops # if rsi is not a string, check the operator
-      movq 8(%rdi), %rcx # get length of the first argument, keep it in rcx
-      movq 8(%rsi), %rdx # get the length of the second argument, keep it in rdx
+      movq 8(%rdi), %rax # get length of the first argument, keep it in rcx
+      cmpq $0, %rax # check if the first string is empty
+      je P_Biop_False # if it is empty, return False
 
       # now we compare the strings
       leaq 16(%rdi), %rdi # rdi points to the first character of the first string
       leaq 16(%rsi), %rsi # rsi points to the first character of the second string
 P_Biop_string_loop:
       testq %rcx, %rcx # check if we reached the end of the first string
-      call P_Biop_cmp # compare the characters at rdi and rsi
-      movzbl (%rdi), %eax # temp1 = rdi[0] 
+
+
+        movzbl (%rdi), %eax # temp1 = rdi[0] 
       movzbl (%rsi), %ebx #  temp2 = rsi[0]
       subl %ebx, %eax # subtract the second character from the first
       movslq %eax, %rax  # sign-extend the result to rax
-      call P_Biop_cmp_Alt # compare the characters
+
       decq %rcx # move to the next character in the first string
       incq %rdi # move to the next character in the first string
       incq %rsi # move to the next character in the second string
@@ -1277,7 +401,6 @@ P_Biop_None: # rdi is None already, check rsi
 P_Biop:
       pushq   %rbp
       movq    %rsp, %rbp
-      xorq %rax, %rax  
       cmpq    $2, (%rdi) # if rdi is an integer
       je      P_Biop_int # 
       cmpq    $3, (%rdi) # if rdi is a string
@@ -1607,273 +730,6 @@ C_False:
 C_True:
   .quad 1
   .quad 1
-S_39:
-	.quad 3, 5
-	.string "hello"
-S_21:
-	.quad 3, 3
-	.string "abc"
-S_71:
-	.quad 3, 0
-	.string ""
-S_41:
-	.quad 3, 1
-	.string "a"
-S_57:
-	.quad 3, 0
-	.string ""
-S_29:
-	.quad 3, 6
-	.string "python"
-S_13:
-	.quad 3, 1
-	.string "5"
-S_74:
-	.quad 3, 6
-	.string "Python"
-S_19:
-	.quad 3, 1
-	.string "7"
-S_25:
-	.quad 3, 1
-	.string "9"
-S_58:
-	.quad 3, 2
-	.string "20"
-S_16:
-	.quad 3, 1
-	.string "6"
-S_23:
-	.quad 3, 5
-	.string "hello"
-S_65:
-	.quad 3, 3
-	.string "abc"
-S_9:
-	.quad 3, 5
-	.string "hello"
-S_43:
-	.quad 3, 2
-	.string "15"
-S_2:
-	.quad 3, 1
-	.string "1"
-S_6:
-	.quad 3, 3
-	.string "abc"
-S_60:
-	.quad 3, 6
-	.string "Python"
-S_4:
-	.quad 3, 1
-	.string "2"
-S_26:
-	.quad 3, 0
-	.string ""
-S_31:
-	.quad 3, 2
-	.string "11"
-S_50:
-	.quad 3, 3
-	.string "def"
-S_73:
-	.quad 3, 2
-	.string "25"
-S_61:
-	.quad 3, 2
-	.string "21"
-S_75:
-	.quad 3, 6
-	.string "python"
-S_5:
-	.quad 3, 3
-	.string "def"
-S_18:
-	.quad 3, 1
-	.string "1"
-S_30:
-	.quad 3, 6
-	.string "Python"
-S_7:
-	.quad 3, 1
-	.string "3"
-S_8:
-	.quad 3, 5
-	.string "hello"
-S_54:
-	.quad 3, 5
-	.string "hello"
-S_53:
-	.quad 3, 5
-	.string "hello"
-S_72:
-	.quad 3, 1
-	.string "a"
-S_85:
-	.quad 3, 2
-	.string "29"
-S_35:
-	.quad 3, 3
-	.string "def"
-S_68:
-	.quad 3, 5
-	.string "hello"
-S_86:
-	.quad 3, 0
-	.string ""
-S_78:
-	.quad 3, 1
-	.string "2"
-S_45:
-	.quad 3, 6
-	.string "Python"
-S_82:
-	.quad 3, 2
-	.string "28"
 S_1:
-	.quad 3, 1
-	.string "1"
-S_12:
-	.quad 3, 0
-	.string ""
-S_63:
-	.quad 3, 1
-	.string "2"
-S_14:
-	.quad 3, 6
-	.string "python"
-S_81:
-	.quad 3, 3
-	.string "def"
-S_28:
-	.quad 3, 2
-	.string "10"
-S_33:
-	.quad 3, 1
-	.string "1"
-S_22:
-	.quad 3, 1
-	.string "8"
-S_62:
-	.quad 3, 1
-	.string "1"
-S_67:
-	.quad 3, 2
-	.string "23"
-S_79:
-	.quad 3, 2
-	.string "27"
-S_36:
-	.quad 3, 3
-	.string "abc"
-S_70:
-	.quad 3, 2
-	.string "24"
-S_66:
-	.quad 3, 3
-	.string "def"
-S_24:
 	.quad 3, 5
 	.string "hello"
-S_32:
-	.quad 3, 1
-	.string "2"
-S_84:
-	.quad 3, 5
-	.string "world"
-S_15:
-	.quad 3, 6
-	.string "Python"
-S_27:
-	.quad 3, 0
-	.string ""
-S_38:
-	.quad 3, 5
-	.string "world"
-S_47:
-	.quad 3, 1
-	.string "1"
-S_80:
-	.quad 3, 3
-	.string "abc"
-S_90:
-	.quad 3, 6
-	.string "python"
-S_51:
-	.quad 3, 3
-	.string "abc"
-S_52:
-	.quad 3, 2
-	.string "18"
-S_77:
-	.quad 3, 1
-	.string "1"
-S_17:
-	.quad 3, 1
-	.string "1"
-S_20:
-	.quad 3, 3
-	.string "def"
-S_40:
-	.quad 3, 2
-	.string "14"
-S_48:
-	.quad 3, 1
-	.string "1"
-S_69:
-	.quad 3, 5
-	.string "world"
-S_55:
-	.quad 3, 2
-	.string "19"
-S_56:
-	.quad 3, 0
-	.string ""
-S_34:
-	.quad 3, 2
-	.string "12"
-S_87:
-	.quad 3, 1
-	.string "a"
-S_88:
-	.quad 3, 2
-	.string "30"
-S_37:
-	.quad 3, 2
-	.string "13"
-S_64:
-	.quad 3, 2
-	.string "22"
-S_76:
-	.quad 3, 2
-	.string "26"
-S_83:
-	.quad 3, 5
-	.string "hello"
-S_89:
-	.quad 3, 6
-	.string "Python"
-S_49:
-	.quad 3, 2
-	.string "17"
-S_3:
-	.quad 3, 1
-	.string "1"
-S_42:
-	.quad 3, 0
-	.string ""
-S_59:
-	.quad 3, 6
-	.string "python"
-S_10:
-	.quad 3, 1
-	.string "4"
-S_44:
-	.quad 3, 6
-	.string "python"
-S_11:
-	.quad 3, 0
-	.string ""
-S_46:
-	.quad 3, 2
-	.string "16"
