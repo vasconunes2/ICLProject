@@ -811,7 +811,42 @@ done:
     ret
 
 P_range:
+    pushq   %rbp
+    movq    %rsp, %rbp
 
+    movq    8(%rdi), %rsi       # rsi = n
+    movq    %rsi, %rdi          # prepare argument for P_alloc_list
+    pushq  %rsi
+    call    P_alloc_list        # rax = list pointer
+    popq   %rsi                # restore n
+    testq   %rax, %rax
+    jz      malloc_failed
+
+    xorq    %rcx, %rcx          # rcx = i = 0
+P_range_loop:
+    cmpq    %rsi, %rcx
+    jge     P_range_end         # if i >= n, exit loop
+    pushq %rax
+    pushq %rcx                  # save i
+    movq    %rcx, %rdi
+    pushq %rsi
+    call    P_alloc_int         # rax = int pointer
+
+    testq   %rax, %rax
+    jz      malloc_failed
+    movq    %rax, %r8          # r8 = int pointer
+    popq    %rsi                # restore n
+    popq    %rcx                # restore i
+    popq    %rax                # restore list pointer in rax
+    movq    %r8, 16(%rax, %rcx, 8)   # list[i] = int pointer
+
+    incq    %rcx
+    jmp     P_range_loop
+
+P_range_end:
+    movq    %rbp, %rsp
+    popq    %rbp
+    ret
 malloc_failed:
     leaq    S_Error_Message_Malloc(%rip), %rdi
     xorq    %rax, %rax
