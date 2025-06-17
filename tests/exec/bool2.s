@@ -553,7 +553,8 @@ done:
 P_range:
     pushq   %rbp
     movq    %rsp, %rbp
-
+    cmpq    $2, (%rdi)          # check if the first argument is a integer
+    jne     TypeError            # if not, raise TypeError
     movq    8(%rdi), %rsi       # rsi = n
     movq    %rsi, %rdi          # prepare argument for P_alloc_list
     pushq  %rsi
