@@ -95,9 +95,12 @@ let check_args args : unit =
         let t1 = expr ctx e1 in
         let t2 = expr ctx e2 in
         begin match t1 with
-        | TElist _ |TEvar _ -> TEget (t1, t2)
-        | _ -> error ~loc:(dummy_loc) "Cannot index non-list expression"
+        | TElist _ | TEvar _ | TEget _ -> TEget (t1, t2)
+        | TErange _ -> TEget (t1, t2)
+        | TEcall (fn, _) when fn.fn_name = "list" -> TEget (t1, t2)
+        | _ -> error ~loc:(dummy_loc) "Get operation can only be applied to lists"
         end
+
 
   let rec stmt (ctx: var_env) (s: Ast.stmt) : Ast.tstmt =
     match s with
@@ -122,10 +125,9 @@ let check_args args : unit =
         let i = expr ctx e2 in
         let v = expr ctx e3 in
         begin match l with
-        | TElist _ | TEvar _ ->
-            TSset (l, i, v)
-        | _ ->
-            error ~loc:dummy_loc "Cannot assign to index of non-list expression"
+        | TElist _ | TEvar _ | TEget _ | TErange _ -> TSset (l, i, v)
+        | TEcall (fn, _) when fn.fn_name = "list" -> TSset (l, i, v)
+        | _ -> error ~loc:dummy_loc "Set operation can only be applied to lists"
         end
 
   (*6. The scope of variables is statically defined.*)

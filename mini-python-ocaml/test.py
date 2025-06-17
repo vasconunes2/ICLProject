@@ -1,13 +1,15 @@
-x = [1, 2, 3, 4, 5]
-print(x)  # Accessing the first element
-x[0] = 10  # Modifying the first element
-print(x)  # Printing the modified list
-x[0] = "hello"  # Changing the first element to a string
-print(x)  # Printing the modified list with a string
-x[0] = [1, 2, 3]  # Changing the first element to a list
-print(x)  # Printing the modified list with a list
-x[0] = [1, 2, [3, 4]]  # Changing the first element to a nested list
-print(x)  # Printing the modified list with a
+row = [1, 2, 3]
+badmatrix = [row, row, row]
+print(badmatrix)
+badmatrix[1][1] = 42
+print(badmatrix)
+
+# row = [1, 2, 3]
+# badmatrix = [row, row, row]
+# print(badmatrix)
+# badmatrix[1][1] = 42
+# print(badmatrix)
+
 # print([])
 # print(([1, 2, 3])[0])
 # print(([1, 2, [3, 4]])[2])

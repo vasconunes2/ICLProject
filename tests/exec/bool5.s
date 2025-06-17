@@ -557,6 +557,7 @@ done:
     popq    %rbp
     ret
 
+P_range:
 
 malloc_failed:
     leaq    S_Error_Message_Malloc(%rip), %rdi

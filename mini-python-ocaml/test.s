@@ -3,15 +3,7 @@
 main:
 	pushq %rbp
 	movq %rsp, %rbp
-	subq $8, %rsp
-	movq $5, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
-	movq $4, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
+	subq $16, %rsp
 	movq $3, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
@@ -24,7 +16,7 @@ main:
 	call P_alloc_int
 	movq %rax, %rdi
 	pushq %rdi
-	movq $5, %rdi
+	movq $3, %rdi
 	call P_alloc_list
 	popq %rdi
 	movq %rdi, 16(%rax)
@@ -32,75 +24,13 @@ main:
 	movq %rdi, 24(%rax)
 	popq %rdi
 	movq %rdi, 32(%rax)
-	popq %rdi
-	movq %rdi, 40(%rax)
-	popq %rdi
-	movq %rdi, 48(%rax)
 	movq %rax, %rdi
 	movq %rdi, -8(%rbp)
 	movq -8(%rbp), %rdi
-	call P_print
-	call P_print_newline
+	pushq %rdi
 	movq -8(%rbp), %rdi
 	pushq %rdi
-	movq $0, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	movq %rdi, %rsi
-	pushq %rsi
-	movq $10, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	popq %rsi
-	movq 8(%rsi), %rsi
-	popq %rbx
-	cmpq $0, %rsi
-	jl index_out_of_bounds
-	movq 8(%rdi), %rcx
-	cmpq %rcx, %rsi
-	jge index_out_of_bounds
-	movq %rdi, 16(%rbx,%rsi,8)
 	movq -8(%rbp), %rdi
-	call P_print
-	call P_print_newline
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $0, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	movq %rdi, %rsi
-	pushq %rsi
-	movq $S_1, %rdi
-	popq %rsi
-	movq 8(%rsi), %rsi
-	popq %rbx
-	cmpq $0, %rsi
-	jl index_out_of_bounds
-	movq 8(%rdi), %rcx
-	cmpq %rcx, %rsi
-	jge index_out_of_bounds
-	movq %rdi, 16(%rbx,%rsi,8)
-	movq -8(%rbp), %rdi
-	call P_print
-	call P_print_newline
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $0, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	movq %rdi, %rsi
-	pushq %rsi
-	movq $3, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
-	movq $2, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
-	movq $1, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
 	pushq %rdi
 	movq $3, %rdi
 	call P_alloc_list
@@ -111,57 +41,32 @@ main:
 	popq %rdi
 	movq %rdi, 32(%rax)
 	movq %rax, %rdi
-	popq %rsi
-	movq 8(%rsi), %rsi
-	popq %rbx
-	cmpq $0, %rsi
-	jl index_out_of_bounds
-	movq 8(%rdi), %rcx
-	cmpq %rcx, %rsi
-	jge index_out_of_bounds
-	movq %rdi, 16(%rbx,%rsi,8)
-	movq -8(%rbp), %rdi
+	movq %rdi, -16(%rbp)
+	movq -16(%rbp), %rdi
 	call P_print
 	call P_print_newline
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $0, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	movq %rdi, %rsi
-	pushq %rsi
-	movq $4, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
-	movq $3, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
-	movq $2, %rdi
-	call P_alloc_list
-	popq %rdi
-	movq %rdi, 16(%rax)
-	popq %rdi
-	movq %rdi, 24(%rax)
-	movq %rax, %rdi
-	pushq %rdi
-	movq $2, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
+	movq -16(%rbp), %rdi
 	pushq %rdi
 	movq $1, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
 	pushq %rdi
-	movq $3, %rdi
-	call P_alloc_list
-	popq %rdi
-	movq %rdi, 16(%rax)
-	popq %rdi
-	movq %rdi, 24(%rax)
-	popq %rdi
-	movq %rdi, 32(%rax)
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	pushq %rsi
+	movq $42, %rdi
+	call P_alloc_int
 	movq %rax, %rdi
 	popq %rsi
 	movq 8(%rsi), %rsi
@@ -172,7 +77,7 @@ main:
 	cmpq %rcx, %rsi
 	jge index_out_of_bounds
 	movq %rdi, 16(%rbx,%rsi,8)
-	movq -8(%rbp), %rdi
+	movq -16(%rbp), %rdi
 	call P_print
 	call P_print_newline
 	xorq %rax, %rax
@@ -801,6 +706,3 @@ C_False:
 C_True:
   .quad 1
   .quad 1
-S_1:
-	.quad 3, 5
-	.string "hello"
