@@ -874,7 +874,36 @@ let rec compile_stmt exit_lbl (s: Ast.tstmt) =
       compile_expr e ++ call "P_print" ++ call "P_print_newline"
   | TSblock sl ->
       List.fold_left (fun c s -> c ++ compile_stmt exit_lbl s) nop sl
-  | TSfor (v, r, s) -> assert false (* TODO *)
+  | TSfor (v, r, s) -> 
+        let ofsv = v.v_ofs in
+        let l_start = new_label () in
+        let l_end = new_label () in
+        let l_stmt = new_label () in
+        compile_expr r ++        (* r in %rdi (list) *)
+        movq (ind ~ofs:8 rdi) (reg rcx) ++   (* rcx = len *)
+        leaq (ind ~ofs:16 ~index:rcx ~scale:8 rdi) rcx ++  (* rcx = end pointer *)
+        pushq (reg rcx) ++       (* push end *)
+        leaq (ind ~ofs:16 rdi) rcx ++  (* rcx = start pointer *)
+        pushq (reg rcx) ++       (* push start *)
+
+        label l_start ++
+        movq (ind ~ofs:0 rsp) (reg rdi) ++  (* rdi = current pointer *)
+        movq (ind ~ofs:8 rsp) (reg rsi) ++  (* rsi = end pointer *)
+        cmpq (reg rsi) (reg rdi) ++
+        je l_end ++
+
+        movq (ind rdi) (reg rcx) ++     (* rcx = *rdi (boxed int pointer) *)
+        movq (ind ~ofs:8 rcx) (reg rcx) ++  (* rcx = unboxed int *)
+        movq (reg rcx) (ind ~ofs:ofsv rbp) ++  (* store to local var *)
+
+        addq (imm 8) (reg rdi) ++
+        movq (reg rdi) (ind ~ofs:0 rsp) ++  (* update current pointer *)
+
+        compile_stmt l_stmt s ++
+        jmp l_start ++
+
+        label l_end ++
+        addq (imm 16) (reg rsp)
   | TSeval e ->
       compile_expr e
   | TSset (l, i, v) -> 
