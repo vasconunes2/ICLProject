@@ -4,28 +4,8 @@ main:
 	pushq %rbp
 	movq %rsp, %rbp
 	subq $8, %rsp
-	movq $0, %rdi
+	movq $42, %rdi
 	call P_alloc_int
-	movq %rax, %rdi
-	call P_range
-	movq %rax, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	call P_print
-	call P_print_newline
-	movq $1, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	call P_range
-	movq %rax, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	call P_print
-	call P_print_newline
-	movq $2, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	call P_range
 	movq %rax, %rdi
 	movq %rdi, -8(%rbp)
 	movq -8(%rbp), %rdi
@@ -34,9 +14,44 @@ main:
 	movq $3, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
-	call P_range
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
 	movq %rax, %rdi
-	movq %rdi, -8(%rbp)
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_list
+	popq %rdi
+	movq %rdi, 16(%rax)
+	popq %rdi
+	movq %rdi, 24(%rax)
+	popq %rdi
+	movq %rdi, 32(%rax)
+	movq %rax, %rdi
+	movq 8(%rdi), %rcx
+	leaq 16(%rdi,%rcx,8), %rcx
+	pushq %rcx
+	leaq 16(%rdi), %rcx
+	pushq %rcx
+L_2:
+	movq 0(%rsp), %rdi
+	movq 8(%rsp), %rsi
+	cmpq %rsi, %rdi
+	je L_3
+	movq 0(%rdi), %rcx
+	movq %rcx, -8(%rbp)
+	addq $8, %rdi
+	movq %rdi, 0(%rsp)
+	movq -8(%rbp), %rdi
+	call P_print
+	call P_print_newline
+	jmp L_2
+L_3:
+	addq $16, %rsp
 	movq -8(%rbp), %rdi
 	call P_print
 	call P_print_newline

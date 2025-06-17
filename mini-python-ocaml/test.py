@@ -1,11 +1,9 @@
-x = list(range(0))
+x = 42
 print(x)
-x = list(range(1))
+for x in [1,2,3]:
+    print(x)
 print(x)
-x = list(range(2))
-print(x)
-x = list(range(3))
-print(x)
+
 # row = [1, 2, 3]
 # badmatrix = [row, row, row]
 # print(badmatrix)
