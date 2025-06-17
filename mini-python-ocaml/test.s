@@ -3,81 +3,41 @@
 main:
 	pushq %rbp
 	movq %rsp, %rbp
-	subq $16, %rsp
-	movq $3, %rdi
+	subq $8, %rsp
+	movq $0, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
-	pushq %rdi
-	movq $2, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
-	movq $1, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
-	movq $3, %rdi
-	call P_alloc_list
-	popq %rdi
-	movq %rdi, 16(%rax)
-	popq %rdi
-	movq %rdi, 24(%rax)
-	popq %rdi
-	movq %rdi, 32(%rax)
+	call P_range
 	movq %rax, %rdi
 	movq %rdi, -8(%rbp)
 	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq -8(%rbp), %rdi
-	pushq %rdi
-	movq $3, %rdi
-	call P_alloc_list
-	popq %rdi
-	movq %rdi, 16(%rax)
-	popq %rdi
-	movq %rdi, 24(%rax)
-	popq %rdi
-	movq %rdi, 32(%rax)
-	movq %rax, %rdi
-	movq %rdi, -16(%rbp)
-	movq -16(%rbp), %rdi
 	call P_print
 	call P_print_newline
-	movq -16(%rbp), %rdi
-	pushq %rdi
 	movq $1, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
-	movq %rdi, %rsi
-	movq 8(%rsi), %rsi
-	popq %rdi
-	cmpq $0, %rsi
-	jl index_out_of_bounds
-	movq 8(%rdi), %rcx
-	cmpq %rcx, %rsi
-	jge index_out_of_bounds
-	movq 16(%rdi,%rsi,8), %rdi
-	pushq %rdi
-	movq $1, %rdi
+	call P_range
+	movq %rax, %rdi
+	movq %rdi, -8(%rbp)
+	movq -8(%rbp), %rdi
+	call P_print
+	call P_print_newline
+	movq $2, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
-	movq %rdi, %rsi
-	pushq %rsi
-	movq $42, %rdi
+	call P_range
+	movq %rax, %rdi
+	movq %rdi, -8(%rbp)
+	movq -8(%rbp), %rdi
+	call P_print
+	call P_print_newline
+	movq $3, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
-	popq %rsi
-	movq 8(%rsi), %rsi
-	popq %rbx
-	cmpq $0, %rsi
-	jl index_out_of_bounds
-	movq 8(%rdi), %rcx
-	cmpq %rcx, %rsi
-	jge index_out_of_bounds
-	movq %rdi, 16(%rbx,%rsi,8)
-	movq -16(%rbp), %rdi
+	call P_range
+	movq %rax, %rdi
+	movq %rdi, -8(%rbp)
+	movq -8(%rbp), %rdi
 	call P_print
 	call P_print_newline
 	xorq %rax, %rax
@@ -609,7 +569,42 @@ done:
     ret
 
 P_range:
+    pushq   %rbp
+    movq    %rsp, %rbp
 
+    movq    8(%rdi), %rsi       # rsi = n
+    movq    %rsi, %rdi          # prepare argument for P_alloc_list
+    pushq  %rsi
+    call    P_alloc_list        # rax = list pointer
+    popq   %rsi                # restore n
+    testq   %rax, %rax
+    jz      malloc_failed
+
+    xorq    %rcx, %rcx          # rcx = i = 0
+P_range_loop:
+    cmpq    %rsi, %rcx
+    jge     P_range_end         # if i >= n, exit loop
+    pushq %rax
+    pushq %rcx                  # save i
+    movq    %rcx, %rdi
+    pushq %rsi
+    call    P_alloc_int         # rax = int pointer
+
+    testq   %rax, %rax
+    jz      malloc_failed
+    movq    %rax, %r8          # r8 = int pointer
+    popq    %rsi                # restore n
+    popq    %rcx                # restore i
+    popq    %rax                # restore list pointer in rax
+    movq    %r8, 16(%rax, %rcx, 8)   # list[i] = int pointer
+
+    incq    %rcx
+    jmp     P_range_loop
+
+P_range_end:
+    movq    %rbp, %rsp
+    popq    %rbp
+    ret
 malloc_failed:
     leaq    S_Error_Message_Malloc(%rip), %rdi
     xorq    %rax, %rax

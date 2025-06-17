@@ -1,8 +1,16 @@
-row = [1, 2, 3]
-badmatrix = [row, row, row]
-print(badmatrix)
-badmatrix[1][1] = 42
-print(badmatrix)
+x = list(range(0))
+print(x)
+x = list(range(1))
+print(x)
+x = list(range(2))
+print(x)
+x = list(range(3))
+print(x)
+# row = [1, 2, 3]
+# badmatrix = [row, row, row]
+# print(badmatrix)
+# badmatrix[1][1] = 42
+# print(badmatrix)
 
 # row = [1, 2, 3]
 # badmatrix = [row, row, row]
