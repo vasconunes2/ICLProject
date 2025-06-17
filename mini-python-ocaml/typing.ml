@@ -118,7 +118,15 @@ let check_args args : unit =
     | Seval e ->
         TSeval (expr ctx e)
     | Sset (e1, e2, e3) ->
-        TSset (expr ctx e1, expr ctx e2, expr ctx e3)
+        let l = expr ctx e1 in
+        let i = expr ctx e2 in
+        let v = expr ctx e3 in
+        begin match l with
+        | TElist _ | TEvar _ ->
+            TSset (l, i, v)
+        | _ ->
+            error ~loc:dummy_loc "Cannot assign to index of non-list expression"
+        end
 
   (*6. The scope of variables is statically defined.*)
 let alloc_var ctx x =
