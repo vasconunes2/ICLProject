@@ -844,7 +844,23 @@ let rec compile_stmt exit_lbl (s: Ast.tstmt) =
   | TSfor (v, r, s) -> assert false (* TODO *)
   | TSeval e ->
       compile_expr e
-  | TSset (_, _, _) -> assert false (* TODO *)
+  | TSset (l, i, v) -> 
+      compile_expr l ++ (* l in %rdi *)
+      pushq (reg rdi) ++ (* save l on stack *)
+      compile_expr i ++ (* i in %rdi *)
+      movq (reg rdi) (reg rsi) ++ (* i in %rsi *)
+      pushq (reg rsi) ++ (* save i on stack *)
+      compile_expr v ++ (* v in %rdi *)
+      popq rsi ++
+      movq (ind ~ofs:8 rsi) (reg rsi) ++ (* rsi = i *)
+      popq rbx ++ (* restore l in rbx *)
+      (*We have l allocate in rbx, i in rsi and v in rdi*)
+      cmpq (imm 0) (reg rsi) ++
+      jl "index_out_of_bounds" ++
+      movq (ind ~ofs:8 rdi) (reg rcx) ++
+      cmpq (reg rcx) (reg rsi) ++
+      jge "index_out_of_bounds" ++
+      movq (reg rdi) (ind ~ofs:16 ~index:rsi ~scale:8 rbx) (*l[i] = v*)
 
 let compile_tdef (fn, tstmt) =
   (* allocate all params in fn.fn_params with
