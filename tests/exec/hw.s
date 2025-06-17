@@ -1053,7 +1053,38 @@ P_gt_done:
     movq %rbp, %rsp
     popq %rbp
     ret
+P_neg:
+    pushq %rbp
+    movq %rsp, %rbp
 
+    movq (%rdi), %rax        # load tag of first argument
+    cmpq $2, %rax            # check if it's an integer
+    jne TypeError             # if not, raise TypeError
+
+    movq 8(%rdi), %rax       # get the integer value
+    negq %rax                 # negate it
+    movq %rax, %rdi          # prepare for allocation
+    call P_alloc_int         # allocate new integer object
+
+    movq %rbp, %rsp
+    popq %rbp
+    ret
+P_not:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    movq (%rdi), %rax        # load tag of first argument
+    cmpq $1, %rax            # check if it's a boolean
+    jne TypeError             # if not, raise TypeError
+
+    movq 8(%rdi), %rax       # get the boolean value
+    xorq $1, %rax            # flip the boolean value
+    movq %rax, %rdi          # prepare for allocation
+    call P_alloc_bool        # allocate new boolean object
+
+    movq %rbp, %rsp
+    popq %rbp
+    ret
 	.data
 
 S_message_int:

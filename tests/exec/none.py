@@ -1,5 +1,6 @@
-def foo():
-    x = 1
-y = foo()
-print(foo())
-print(foo() != foo())
+def f(x)
+    if x == 0:
+        return 0
+    else:
+        return f(x - 1) + 1
+print(f(10))

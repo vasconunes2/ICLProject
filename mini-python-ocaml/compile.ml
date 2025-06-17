@@ -1048,7 +1048,38 @@ P_gt_done:
     movq %rbp, %rsp
     popq %rbp
     ret
+P_neg:
+    pushq %rbp
+    movq %rsp, %rbp
 
+    movq (%rdi), %rax        # load tag of first argument
+    cmpq $2, %rax            # check if it's an integer
+    jne TypeError             # if not, raise TypeError
+
+    movq 8(%rdi), %rax       # get the integer value
+    negq %rax                 # negate it
+    movq %rax, %rdi          # prepare for allocation
+    call P_alloc_int         # allocate new integer object
+
+    movq %rbp, %rsp
+    popq %rbp
+    ret
+P_not:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    movq (%rdi), %rax        # load tag of first argument
+    cmpq $1, %rax            # check if it's a boolean
+    jne TypeError             # if not, raise TypeError
+
+    movq 8(%rdi), %rax       # get the boolean value
+    xorq $1, %rax            # flip the boolean value
+    movq %rax, %rdi          # prepare for allocation
+    call P_alloc_bool        # allocate new boolean object
+
+    movq %rbp, %rsp
+    popq %rbp
+    ret
 "
 
 let data_inline = "
@@ -1240,7 +1271,14 @@ let rec compile_expr (e: Ast.texpr) =
         call op ++
         movq (reg rax) (reg rdi)
     end
-  | TEunop (_, _) -> nop (* TODO: implement unary operators *)
+  | TEunop (op, e) ->
+      let r = match op with
+        | Uneg -> call "P_neg"
+        | Unot -> call "P_not"
+      in
+      compile_expr e ++
+      r ++
+      movq (reg rax) (reg rdi)
   | TEcall (fn, el) ->
       let push_arg e =
         compile_expr e ++
