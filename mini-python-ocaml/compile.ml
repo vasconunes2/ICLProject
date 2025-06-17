@@ -529,6 +529,7 @@ done:
     popq    %rbp
     ret
 
+P_range:
 
 malloc_failed:
     leaq    S_Error_Message_Malloc(%rip), %rdi
@@ -800,29 +801,18 @@ let rec compile_expr (e: Ast.texpr) =
 
   movq (reg rax) (reg rdi) (* result in %rdi *)
 | TEget (e1, e2) ->
-    match e1, e2 with
-    | TElist el, TEvar ei ->
-      let l = TElist el in
-      let i = TEvar ei in
-      compile_expr l ++
-      pushq (reg rdi) ++
-      compile_expr i ++
-      movq (reg rdi) (reg rsi) ++
-      popq rdi ++
-      cmpq (imm (List.length el)) (reg rsi) ++
-      jge "index_out_of_bounds" ++
-      cmpq (imm 0) (reg rsi) ++
-      jl "index_out_of_bounds" ++
-      movq (ind ~ofs:16 ~index:rsi ~scale:8 rdi) (reg rdi)
-    | _,_ ->
-      compile_expr e1 ++ (* in %rdi *)
-      pushq (reg rdi) ++ (* save e1 on stack *)
-      compile_expr e2 ++ (* in %rdi *)
-      movq (reg rdi) (reg rsi) ++ (* %rsi = e2 *)
-      popq rdi ++ (* %rdi = e1 *)
-      call "Get" ++ (* result in %rax *)
-      movq (reg rax) (reg rdi)
-      
+    compile_expr e1 ++
+    pushq (reg rdi) ++
+    compile_expr e2 ++
+    movq (reg rdi) (reg rsi) ++
+    movq (ind ~ofs:8 rsi) (reg rsi) ++
+    popq rdi ++
+    cmpq (imm 0) (reg rsi) ++
+    jl "index_out_of_bounds" ++
+    movq (ind ~ofs:8 rdi) (reg rcx) ++
+    cmpq (reg rcx) (reg rsi) ++
+    jge "index_out_of_bounds" ++
+    movq (ind ~ofs:16 ~index:rsi ~scale:8 rdi) (reg rdi) (* rdi = list[rsi]*)
 
 let rec compile_stmt exit_lbl (s: Ast.tstmt) =
   match s with

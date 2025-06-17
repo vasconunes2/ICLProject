@@ -12,7 +12,7 @@ main:
 	movq %rax, %rdi
 	movq %rdi, %rsi
 	popq %rdi
-	call P_less
+	call P_Biop
 	testq %rax, %rax
 	setl %al
 	movq $C_True, %rdi
@@ -52,18 +52,19 @@ P_print_None:
       ret
 P_print_list:
     pushq   %rbp
-    movq    %rsp, %rbp
-    andq    $-16, %rsp
+    movq    %rsp, %rbp 
     pushq   %rdi
-
-    leaq    S_char_open_bracket(%rip), %rdi
     xorq    %rax, %rax
+    leaq    S_char_open_bracket(%rip), %rdi 
     call    printf
 
     popq    %rdi
+    pushq   %rdi
+    
     movq    8(%rdi), %rsi
     cmpq    $0, %rsi
     je      .print_list_end
+
     movq    $0, %rax
 
 .print_list_loop:
@@ -71,28 +72,43 @@ P_print_list:
     je      .print_list_end
 
     movq    %rax, %rcx
-    shl     $3, %rcx
-    addq    $16, %rcx
-    addq    %rdi, %rcx
-    movq    (%rcx), %rdi
+    shlq    $3, %rcx
+    leaq    16(%rdi, %rcx), %rcx
+    
+    pushq   %rdi
+    pushq   %rsi
+    pushq   %rax
+    
+    movq    (%rcx), %rdi 
     call    P_print
-
+    
+    popq    %rax
+    popq    %rsi
+    popq    %rdi
+    
     incq    %rax
     cmpq    %rax, %rsi
-    je      .print_list_loop_continue
-
+    je      .print_list_end
+    
+    pushq   %rdi
+    pushq   %rsi
+    pushq   %rax
     leaq    S_string_comma_space(%rip), %rdi
     xorq    %rax, %rax
     call    printf
-
-.print_list_loop_continue:
+    popq    %rax
+    popq    %rsi
+    popq    %rdi
+    
     jmp     .print_list_loop
 
 .print_list_end:
+    pushq   %rdi
     leaq    S_char_close_bracket(%rip), %rdi
     xorq    %rax, %rax
     call    printf
-
+    popq    %rdi
+    
     movq    %rbp, %rsp
     popq    %rbp
     ret
@@ -113,14 +129,15 @@ Get:
     movq    16(%rdi), %rdx       # rdx = obj.data_ptr
 
     movq    (%rdx, %rcx, 8), %rax
-            movq    %rbp, %rsp
-      popq    %rbp
-      ret
+
+    movq    %rbp, %rsp
+    popq    %rbp
+    ret
 Get_IndexError:
     xorq    %rax, %rax
-          movq    %rbp, %rsp
-      popq    %rbp
-      ret
+    movq    %rbp, %rsp
+    popq    %rbp
+    ret
 P_print_string:
       pushq   %rbp
       movq    %rsp, %rbp
@@ -128,7 +145,7 @@ P_print_string:
       movq    %rdi, %rsi
       movq    $S_message_string, %rdi
       xorq    %rax, %rax
-      call    printf
+      call    printf  
       movq    %rbp, %rsp
       popq    %rbp
       ret
@@ -138,7 +155,7 @@ P_print_int:
       movq    %rsp, %rbp
       andq    $-16, %rsp
       movq    %rdi, %rsi
-      leaq S_message_int(%rip), %rdi
+      leaq    S_message_int(%rip), %rdi
       xorq    %rax, %rax
       call    printf
       movq    %rbp, %rsp
@@ -162,7 +179,7 @@ Ret_True:
       movq    $S_bool_True, %rdi
       xorq    %rax, %rax
       call    printf
-            movq    %rbp, %rsp
+      movq    %rbp, %rsp
       popq    %rbp
       ret
 
@@ -213,53 +230,70 @@ P_print:
       movq    %rbp, %rsp
       popq    %rbp
       ret
-P_equal_int:
-      cmpq    $2, (%rsi) # if rsi is int 
-      jne     P_equal_False # if rsi is not None, return False
+
+P_Biop_check_ops:
+      cmpq  $1,  %r12 # if r12 is neq
+      je P_Biop_True # if r12 is neq, return True
+      cmpq  $0,  %r12 # if r12 is eq
+      jne TypeError # if r12 is eq, return False
+      jmp P_Biop_True # if r12 is eq, return False
+
+P_Biop_int:
+      cmpq    $2, (%rsi) # if rsi is int
+      jne     P_Biop_check_ops
       movq 8(%rdi), %rdi # get the value of the first argument
       movq 8(%rsi), %rsi # get the value of the second argument
-      cmpq %rdi, %rsi
-      je P_equal_True # if they are equal, return True
-      jmp P_equal_False # if they are not equal, return False
+      movq %rdi, %rax # move the value of the first argument to rax
+      subq %rsi, %rax # subtract the value of the second argument from rax
+      jmp P_Biop_End
 
-P_equal_string:
+P_Biop_Bool:
+      cmpq    $1, (%rsi) # if rsi is bool
+      jne     P_Biop_check_ops # if rsi is not a boolean, return False
+      movq 8(%rdi), %rdi # get the value of the first argument
+      movq 8(%rsi), %rsi # get the value of the second argument
+      movq %rdi, %rax # move the value of the first argument to rax
+      subq %rsi, %rax # subtract the value of the second argument from rax
+      jmp P_Biop_End
+
+
+P_Biop_string:
       cmpq    $3, (%rsi) # if rsi is string
-      jne     P_equal_False # if rsi is not None, return False
+      jne     P_Biop_check_ops # if rsi is not a string, check the operator
+      movq 8(%rdi), %rax # get length of the first argument, keep it in rcx
+      cmpq $0, %rax # check if the first string is empty
+      je P_Biop_False # if it is empty, return False
 
-      movq 8(%rdi), %rcx # get length of the first argument, keep it in rcx
-      movq 8(%rsi), %rdx # get the length of the second argument, keep it in rdx
-      cmpq %rcx, %rdx
-      jne P_equal_False # if  they have different lengths, return False
       # now we compare the strings
       leaq 16(%rdi), %rdi # rdi points to the first character of the first string
       leaq 16(%rsi), %rsi # rsi points to the first character of the second string
-P_equal_string_loop:
+P_Biop_string_loop:
       testq %rcx, %rcx # check if we reached the end of the first string
-      je P_equal_True # if we reached the end, return True
 
-      movzbl (%rdi), %eax # load the first character of the first string
-      movzbl (%rsi), %ebx # load the first character of the second string
-      cmpb %al, %bl # compare the characters
-      jne P_equal_False # if they are not equal, return False
+
+        movzbl (%rdi), %eax # temp1 = rdi[0] 
+      movzbl (%rsi), %ebx #  temp2 = rsi[0]
+      subl %ebx, %eax # subtract the second character from the first
+      movslq %eax, %rax  # sign-extend the result to rax
+
       decq %rcx # move to the next character in the first string
       incq %rdi # move to the next character in the first string
       incq %rsi # move to the next character in the second string
-      jmp P_equal_string_loop # repeat the loop
-      
-P_equal_list:
-      cmpq    $4, (%rsi) # if rsi is list
-      jne     P_equal_False # if rsi is not None, return False
+      jmp P_Biop_string_loop # repeat the loop
 
-      movq 8(%rdi), %rcx # get the length of the first argument, keep it in rcx
-      movq 8(%rsi), %rdx # get the length of the second argument, keep it in rdx
-      cmpq %rcx, %rdx
-      jne P_equal_False # if they have different lengths, return False
+P_Biop_list:
+      cmpq    $4, (%rsi) # if rsi is list
+      jne     P_Biop_check_ops
+
+      movq 8(%rdi), %rcx # len1 = arg1 length
+      movq 8(%rsi), %rdx # len2 = arg2 length
+      cmpq %rcx, %rdx #  b = len1 == len2
+      jne P_Biop_False # if b != True , return False
       
-      movq $0, %rbx # use rbx as a counter for the loop
-      
-P_equal_list_loop:
+      movq $0, %rbx # i = 0, we will use rbx as the index for the loop
+P_Biop_list_loop:
       cmpq %rbx, %rcx
-      je P_equal_True # if we reached the end, return True
+      je P_Biop_True # if we reached the end, return True
 
       movq 16(%rdi, %rbx, 8), %r10  # r10 = left[i]
       movq 16(%rsi, %rbx, 8), %r11  # r11 = right[i]
@@ -267,48 +301,45 @@ P_equal_list_loop:
       pushq %rsi # save rsi
       movq %r10, %rdi # move the first element of the first list to rdi
       movq %r11, %rsi # move the first element of the second list to rsi
-      call P_equal # compare the first elements of both lists
+      call P_Biop # P_Biop(left[i], right[i])
       popq %rsi # restore rsi
       popq %rdi # restore rdi
       testq %rax, %rax
-      jne P_equal_False           
+      jne P_Biop_False
+ 
+      incq %rbx # i++
+      jmp P_Biop_list_loop
 
-      incq %rbx
-      jmp P_equal_list_loop
-
-P_equal_None: # rdi is None already, check rsi 
+P_Biop_None: # rdi is None already, check rsi 
       cmpq    $0, (%rsi) # if rsi is None
-      jne     P_equal_False # if rsi is not None, return False
-      jmp     P_equal_True # if rsi is None, return True
-P_equal:
+      jne     P_Biop_False # if rsi is not None, return False
+      jmp     P_Biop_True # if rsi is None, return True
+P_Biop:
       pushq   %rbp
       movq    %rsp, %rbp
-      pushq   %rdi # save first argument
-      pushq   %rsi # save second argument
-
-      
-      cmpq    $0, (%rdi) # if rdi is None
-      je      P_equal_None # args are all None,return True
-      cmpq    $1, (%rdi) # if rdi is a boolean
-      je      P_equal_int # if rdi is a boolean, print it
       cmpq    $2, (%rdi) # if rdi is an integer
-      je      P_equal_int # if rdi is an integer, print it
+      je      P_Biop_int # 
       cmpq    $3, (%rdi) # if rdi is a string
-      je      P_equal_string # if rdi is a string, print it
+      je      P_Biop_string # 
       cmpq    $4, (%rdi) # if rdi is a list
-      je      P_equal_list # if rdi is a list, print it
-P_equal_End:
-      popq    %rsi # restore second argument
-      popq    %rdi # restore first argument
-      popq    %rbp # restore base pointer
+      je      P_Biop_list #
+      cmpq    $0, (%rdi) # if rdi is None
+      je      P_Biop_None # 
+      cmpq    $1, (%rdi) # if rdi is a boolean
+      je      P_Biop_Bool #
+      jmp     P_Biop_False # if rdi is not a valid type, return False
+P_Biop_True:
+      movq    $1, %rax # if equal, return True
+      jmp    P_Biop_End # jump to End
+P_Biop_False:
+      movq    $0, %rax
+      jmp    P_Biop_End
+P_Biop_End:
+      movq    %rbp, %rsp
+      popq    %rbp
       ret
 
-P_equal_True:
-      movq    $0, %rax # if equal, return True
-      jmp    P_equal_End # jump to End
-P_equal_False:
-      movq    $1, %rax # if not equal, return False
-      jmp    P_equal_End # jump to End
+
 
 P_alloc_bool: # The boolean have structure: [1 | 0/1] init with 0
       pushq   %rbp

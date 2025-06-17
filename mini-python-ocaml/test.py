@@ -1,8 +1,8 @@
-# 空列表测试
 print([])
-print([1, 2, 3])
-print([1, 2, [3, 4]])
-print([1, 2, [3, 4], "hello"])
+print(([1, 2, 3])[0])
+print(([1, 2, [3, 4]])[2])
+print(([1, 2, [3, 4], "hello"])[3])
+print(([True, False, [3, 4], "hello", [None, 6]])[4])
 # # test for int:
 # # equal test for int
 # print("1")

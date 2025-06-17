@@ -92,7 +92,12 @@ let check_args args : unit =
     | Elist e ->
         TElist (List.map (expr ctx) e)
     | Eget (e1, e2) ->
-        TEget (expr ctx e1, expr ctx e2)
+        let t1 = expr ctx e1 in
+        let t2 = expr ctx e2 in
+        begin match t1 with
+        | TElist _ |TEvar _ -> TEget (t1, t2)
+        | _ -> error ~loc:(dummy_loc) "Cannot index non-list expression"
+        end
 
   let rec stmt (ctx: var_env) (s: Ast.stmt) : Ast.tstmt =
     match s with
