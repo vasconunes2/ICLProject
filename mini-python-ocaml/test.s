@@ -3,31 +3,16 @@
 main:
 	pushq %rbp
 	movq %rsp, %rbp
+	subq $544, %rsp
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
 	movq $2, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
 	pushq %rdi
 	movq $1, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
-	movq $2, %rdi
-	call P_alloc_list
-	popq %rdi
-	movq %rdi, 16(%rax)
-	popq %rdi
-	movq %rdi, 24(%rax)
-	movq %rax, %rdi
-	pushq %rdi
-	movq $5, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
-	movq $4, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
-	movq $3, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
 	pushq %rdi
@@ -40,86 +25,4875 @@ main:
 	popq %rdi
 	movq %rdi, 32(%rax)
 	movq %rax, %rdi
-	movq %rdi, %rsi
-	popq %rdi
-	call P_add
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_list
 	movq %rax, %rdi
-	call P_print
-	call P_print_newline
-	movq $7, %rdi
+	pushq %rdi
+	movq $C_None, %rdi
+	pushq %rdi
+	movq $C_True, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $S_1, %rdi
+	pushq %rdi
+	movq $1, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
 	pushq %rdi
-	movq $4, %rdi
+	movq $0, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
 	pushq %rdi
-	call F_f
-	addq $16, %rsp
+	movq $8, %rdi
+	call P_alloc_list
+	popq %rdi
+	movq %rdi, 16(%rax)
+	popq %rdi
+	movq %rdi, 24(%rax)
+	popq %rdi
+	movq %rdi, 32(%rax)
+	popq %rdi
+	movq %rdi, 40(%rax)
+	popq %rdi
+	movq %rdi, 48(%rax)
+	popq %rdi
+	movq %rdi, 56(%rax)
+	popq %rdi
+	movq %rdi, 64(%rax)
+	popq %rdi
+	movq %rdi, 72(%rax)
 	movq %rax, %rdi
-	call P_print
-	call P_print_newline
-	xorq %rax, %rax
-	movq %rbp, %rsp
-	popq %rbp
-	ret
-F_f:
-	pushq %rbp
-	movq %rsp, %rbp
-	movq 16(%rbp), %rdi
+	movq %rdi, -8(%rbp)
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
 	pushq %rdi
-	movq 24(%rbp), %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_list
+	popq %rdi
+	movq %rdi, 16(%rax)
+	popq %rdi
+	movq %rdi, 24(%rax)
+	popq %rdi
+	movq %rdi, 32(%rax)
+	movq %rax, %rdi
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_list
+	movq %rax, %rdi
+	pushq %rdi
+	movq $C_None, %rdi
+	pushq %rdi
+	movq $C_True, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $S_2, %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $8, %rdi
+	call P_alloc_list
+	popq %rdi
+	movq %rdi, 16(%rax)
+	popq %rdi
+	movq %rdi, 24(%rax)
+	popq %rdi
+	movq %rdi, 32(%rax)
+	popq %rdi
+	movq %rdi, 40(%rax)
+	popq %rdi
+	movq %rdi, 48(%rax)
+	popq %rdi
+	movq %rdi, 56(%rax)
+	popq %rdi
+	movq %rdi, 64(%rax)
+	popq %rdi
+	movq %rdi, 72(%rax)
+	movq %rax, %rdi
+	movq %rdi, -16(%rbp)
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
 	movq %rdi, %rsi
 	popq %rdi
-	call P_Biop
+	call P_equal
 	testq %rax, %rax
-	setge %al
+	sete %al
 	movq $C_True, %rdi
 	movq $C_False, %rsi
 	testb %al, %al
 	cmovz %rsi, %rdi
-	call P_test
-	testq %rax, %rax
-	jz L_3
+	call P_print
+	call P_print_newline
+	movq -8(%rbp), %rdi
+	pushq %rdi
 	movq $0, %rdi
-	call P_alloc_list
+	call P_alloc_int
 	movq %rax, %rdi
-	movq %rdi, %rax
-	jmp L_2
-	jmp L_4
-L_3:
-L_4:
-	movq 16(%rbp), %rdi
-	pushq %rdi
-	movq $1, %rdi
-	call P_alloc_list
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
 	popq %rdi
-	movq %rdi, 16(%rax)
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_int
 	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -24(%rbp)
+	movq -8(%rbp), %rdi
 	pushq %rdi
-	movq 24(%rbp), %rdi
+	movq $0, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
 	pushq %rdi
-	movq 16(%rbp), %rdi
+	movq -16(%rbp), %rdi
 	pushq %rdi
 	movq $1, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
 	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
 	popq %rdi
-	call P_add
-	movq %rax, %rdi
-	pushq %rdi
-	call F_f
-	addq $16, %rsp
-	movq %rax, %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
 	movq %rdi, %rsi
 	popq %rdi
-	call P_add
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -32(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_int
 	movq %rax, %rdi
-	movq %rdi, %rax
-	jmp L_2
-	movq $C_None, %rax
-L_2:
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -40(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -48(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -56(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $5, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -64(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $6, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -72(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $7, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -80(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -88(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -96(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -104(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -112(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -120(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $5, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -128(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $6, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -136(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $7, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -144(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -152(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -160(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -168(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -176(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -184(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $5, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -192(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $6, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -200(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $7, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -208(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -216(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -224(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -232(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -240(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -248(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $5, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -256(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $6, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -264(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $7, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -272(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -280(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -288(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -296(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -304(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -312(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $5, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -320(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $6, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -328(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $7, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -336(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $5, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -344(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $5, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -352(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $5, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -360(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $5, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -368(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $5, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -376(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $5, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $5, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -384(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $5, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $6, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -392(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $5, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $7, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -400(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $6, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -408(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $6, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -416(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $6, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -424(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $6, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -432(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $6, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -440(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $6, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $5, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -448(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $6, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $6, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -456(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $6, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $7, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -464(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $7, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -472(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $7, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -480(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $7, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -488(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $7, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -496(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $7, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -504(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $7, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $5, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -512(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $7, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $6, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -520(%rbp)
+	movq -8(%rbp), %rdi
+	pushq %rdi
+	movq $7, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	pushq %rdi
+	movq -16(%rbp), %rdi
+	pushq %rdi
+	movq $7, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	movq %rdi, -528(%rbp)
+	movq -528(%rbp), %rdi
+	pushq %rdi
+	movq -520(%rbp), %rdi
+	pushq %rdi
+	movq -512(%rbp), %rdi
+	pushq %rdi
+	movq -504(%rbp), %rdi
+	pushq %rdi
+	movq -496(%rbp), %rdi
+	pushq %rdi
+	movq -488(%rbp), %rdi
+	pushq %rdi
+	movq -480(%rbp), %rdi
+	pushq %rdi
+	movq -472(%rbp), %rdi
+	pushq %rdi
+	movq -464(%rbp), %rdi
+	pushq %rdi
+	movq -456(%rbp), %rdi
+	pushq %rdi
+	movq -448(%rbp), %rdi
+	pushq %rdi
+	movq -440(%rbp), %rdi
+	pushq %rdi
+	movq -432(%rbp), %rdi
+	pushq %rdi
+	movq -424(%rbp), %rdi
+	pushq %rdi
+	movq -416(%rbp), %rdi
+	pushq %rdi
+	movq -408(%rbp), %rdi
+	pushq %rdi
+	movq -400(%rbp), %rdi
+	pushq %rdi
+	movq -392(%rbp), %rdi
+	pushq %rdi
+	movq -384(%rbp), %rdi
+	pushq %rdi
+	movq -376(%rbp), %rdi
+	pushq %rdi
+	movq -368(%rbp), %rdi
+	pushq %rdi
+	movq -360(%rbp), %rdi
+	pushq %rdi
+	movq -352(%rbp), %rdi
+	pushq %rdi
+	movq -344(%rbp), %rdi
+	pushq %rdi
+	movq -336(%rbp), %rdi
+	pushq %rdi
+	movq -328(%rbp), %rdi
+	pushq %rdi
+	movq -320(%rbp), %rdi
+	pushq %rdi
+	movq -312(%rbp), %rdi
+	pushq %rdi
+	movq -304(%rbp), %rdi
+	pushq %rdi
+	movq -296(%rbp), %rdi
+	pushq %rdi
+	movq -288(%rbp), %rdi
+	pushq %rdi
+	movq -280(%rbp), %rdi
+	pushq %rdi
+	movq -272(%rbp), %rdi
+	pushq %rdi
+	movq -264(%rbp), %rdi
+	pushq %rdi
+	movq -256(%rbp), %rdi
+	pushq %rdi
+	movq -248(%rbp), %rdi
+	pushq %rdi
+	movq -240(%rbp), %rdi
+	pushq %rdi
+	movq -232(%rbp), %rdi
+	pushq %rdi
+	movq -224(%rbp), %rdi
+	pushq %rdi
+	movq -216(%rbp), %rdi
+	pushq %rdi
+	movq -208(%rbp), %rdi
+	pushq %rdi
+	movq -200(%rbp), %rdi
+	pushq %rdi
+	movq -192(%rbp), %rdi
+	pushq %rdi
+	movq -184(%rbp), %rdi
+	pushq %rdi
+	movq -176(%rbp), %rdi
+	pushq %rdi
+	movq -168(%rbp), %rdi
+	pushq %rdi
+	movq -160(%rbp), %rdi
+	pushq %rdi
+	movq -152(%rbp), %rdi
+	pushq %rdi
+	movq -144(%rbp), %rdi
+	pushq %rdi
+	movq -136(%rbp), %rdi
+	pushq %rdi
+	movq -128(%rbp), %rdi
+	pushq %rdi
+	movq -120(%rbp), %rdi
+	pushq %rdi
+	movq -112(%rbp), %rdi
+	pushq %rdi
+	movq -104(%rbp), %rdi
+	pushq %rdi
+	movq -96(%rbp), %rdi
+	pushq %rdi
+	movq -88(%rbp), %rdi
+	pushq %rdi
+	movq -80(%rbp), %rdi
+	pushq %rdi
+	movq -72(%rbp), %rdi
+	pushq %rdi
+	movq -64(%rbp), %rdi
+	pushq %rdi
+	movq -56(%rbp), %rdi
+	pushq %rdi
+	movq -48(%rbp), %rdi
+	pushq %rdi
+	movq -40(%rbp), %rdi
+	pushq %rdi
+	movq -32(%rbp), %rdi
+	pushq %rdi
+	movq -24(%rbp), %rdi
+	pushq %rdi
+	movq $64, %rdi
+	call P_alloc_list
+	popq %rdi
+	movq %rdi, 16(%rax)
+	popq %rdi
+	movq %rdi, 24(%rax)
+	popq %rdi
+	movq %rdi, 32(%rax)
+	popq %rdi
+	movq %rdi, 40(%rax)
+	popq %rdi
+	movq %rdi, 48(%rax)
+	popq %rdi
+	movq %rdi, 56(%rax)
+	popq %rdi
+	movq %rdi, 64(%rax)
+	popq %rdi
+	movq %rdi, 72(%rax)
+	popq %rdi
+	movq %rdi, 80(%rax)
+	popq %rdi
+	movq %rdi, 88(%rax)
+	popq %rdi
+	movq %rdi, 96(%rax)
+	popq %rdi
+	movq %rdi, 104(%rax)
+	popq %rdi
+	movq %rdi, 112(%rax)
+	popq %rdi
+	movq %rdi, 120(%rax)
+	popq %rdi
+	movq %rdi, 128(%rax)
+	popq %rdi
+	movq %rdi, 136(%rax)
+	popq %rdi
+	movq %rdi, 144(%rax)
+	popq %rdi
+	movq %rdi, 152(%rax)
+	popq %rdi
+	movq %rdi, 160(%rax)
+	popq %rdi
+	movq %rdi, 168(%rax)
+	popq %rdi
+	movq %rdi, 176(%rax)
+	popq %rdi
+	movq %rdi, 184(%rax)
+	popq %rdi
+	movq %rdi, 192(%rax)
+	popq %rdi
+	movq %rdi, 200(%rax)
+	popq %rdi
+	movq %rdi, 208(%rax)
+	popq %rdi
+	movq %rdi, 216(%rax)
+	popq %rdi
+	movq %rdi, 224(%rax)
+	popq %rdi
+	movq %rdi, 232(%rax)
+	popq %rdi
+	movq %rdi, 240(%rax)
+	popq %rdi
+	movq %rdi, 248(%rax)
+	popq %rdi
+	movq %rdi, 256(%rax)
+	popq %rdi
+	movq %rdi, 264(%rax)
+	popq %rdi
+	movq %rdi, 272(%rax)
+	popq %rdi
+	movq %rdi, 280(%rax)
+	popq %rdi
+	movq %rdi, 288(%rax)
+	popq %rdi
+	movq %rdi, 296(%rax)
+	popq %rdi
+	movq %rdi, 304(%rax)
+	popq %rdi
+	movq %rdi, 312(%rax)
+	popq %rdi
+	movq %rdi, 320(%rax)
+	popq %rdi
+	movq %rdi, 328(%rax)
+	popq %rdi
+	movq %rdi, 336(%rax)
+	popq %rdi
+	movq %rdi, 344(%rax)
+	popq %rdi
+	movq %rdi, 352(%rax)
+	popq %rdi
+	movq %rdi, 360(%rax)
+	popq %rdi
+	movq %rdi, 368(%rax)
+	popq %rdi
+	movq %rdi, 376(%rax)
+	popq %rdi
+	movq %rdi, 384(%rax)
+	popq %rdi
+	movq %rdi, 392(%rax)
+	popq %rdi
+	movq %rdi, 400(%rax)
+	popq %rdi
+	movq %rdi, 408(%rax)
+	popq %rdi
+	movq %rdi, 416(%rax)
+	popq %rdi
+	movq %rdi, 424(%rax)
+	popq %rdi
+	movq %rdi, 432(%rax)
+	popq %rdi
+	movq %rdi, 440(%rax)
+	popq %rdi
+	movq %rdi, 448(%rax)
+	popq %rdi
+	movq %rdi, 456(%rax)
+	popq %rdi
+	movq %rdi, 464(%rax)
+	popq %rdi
+	movq %rdi, 472(%rax)
+	popq %rdi
+	movq %rdi, 480(%rax)
+	popq %rdi
+	movq %rdi, 488(%rax)
+	popq %rdi
+	movq %rdi, 496(%rax)
+	popq %rdi
+	movq %rdi, 504(%rax)
+	popq %rdi
+	movq %rdi, 512(%rax)
+	popq %rdi
+	movq %rdi, 520(%rax)
+	movq %rax, %rdi
+	movq %rdi, -536(%rbp)
+	movq -536(%rbp), %rdi
+	call P_print
+	call P_print_newline
+	movq $C_True, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_True, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_True, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_True, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_True, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_True, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_True, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_True, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_True, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_True, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_True, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_False, %rdi
+	pushq %rdi
+	movq $C_True, %rdi
+	pushq %rdi
+	movq $64, %rdi
+	call P_alloc_list
+	popq %rdi
+	movq %rdi, 16(%rax)
+	popq %rdi
+	movq %rdi, 24(%rax)
+	popq %rdi
+	movq %rdi, 32(%rax)
+	popq %rdi
+	movq %rdi, 40(%rax)
+	popq %rdi
+	movq %rdi, 48(%rax)
+	popq %rdi
+	movq %rdi, 56(%rax)
+	popq %rdi
+	movq %rdi, 64(%rax)
+	popq %rdi
+	movq %rdi, 72(%rax)
+	popq %rdi
+	movq %rdi, 80(%rax)
+	popq %rdi
+	movq %rdi, 88(%rax)
+	popq %rdi
+	movq %rdi, 96(%rax)
+	popq %rdi
+	movq %rdi, 104(%rax)
+	popq %rdi
+	movq %rdi, 112(%rax)
+	popq %rdi
+	movq %rdi, 120(%rax)
+	popq %rdi
+	movq %rdi, 128(%rax)
+	popq %rdi
+	movq %rdi, 136(%rax)
+	popq %rdi
+	movq %rdi, 144(%rax)
+	popq %rdi
+	movq %rdi, 152(%rax)
+	popq %rdi
+	movq %rdi, 160(%rax)
+	popq %rdi
+	movq %rdi, 168(%rax)
+	popq %rdi
+	movq %rdi, 176(%rax)
+	popq %rdi
+	movq %rdi, 184(%rax)
+	popq %rdi
+	movq %rdi, 192(%rax)
+	popq %rdi
+	movq %rdi, 200(%rax)
+	popq %rdi
+	movq %rdi, 208(%rax)
+	popq %rdi
+	movq %rdi, 216(%rax)
+	popq %rdi
+	movq %rdi, 224(%rax)
+	popq %rdi
+	movq %rdi, 232(%rax)
+	popq %rdi
+	movq %rdi, 240(%rax)
+	popq %rdi
+	movq %rdi, 248(%rax)
+	popq %rdi
+	movq %rdi, 256(%rax)
+	popq %rdi
+	movq %rdi, 264(%rax)
+	popq %rdi
+	movq %rdi, 272(%rax)
+	popq %rdi
+	movq %rdi, 280(%rax)
+	popq %rdi
+	movq %rdi, 288(%rax)
+	popq %rdi
+	movq %rdi, 296(%rax)
+	popq %rdi
+	movq %rdi, 304(%rax)
+	popq %rdi
+	movq %rdi, 312(%rax)
+	popq %rdi
+	movq %rdi, 320(%rax)
+	popq %rdi
+	movq %rdi, 328(%rax)
+	popq %rdi
+	movq %rdi, 336(%rax)
+	popq %rdi
+	movq %rdi, 344(%rax)
+	popq %rdi
+	movq %rdi, 352(%rax)
+	popq %rdi
+	movq %rdi, 360(%rax)
+	popq %rdi
+	movq %rdi, 368(%rax)
+	popq %rdi
+	movq %rdi, 376(%rax)
+	popq %rdi
+	movq %rdi, 384(%rax)
+	popq %rdi
+	movq %rdi, 392(%rax)
+	popq %rdi
+	movq %rdi, 400(%rax)
+	popq %rdi
+	movq %rdi, 408(%rax)
+	popq %rdi
+	movq %rdi, 416(%rax)
+	popq %rdi
+	movq %rdi, 424(%rax)
+	popq %rdi
+	movq %rdi, 432(%rax)
+	popq %rdi
+	movq %rdi, 440(%rax)
+	popq %rdi
+	movq %rdi, 448(%rax)
+	popq %rdi
+	movq %rdi, 456(%rax)
+	popq %rdi
+	movq %rdi, 464(%rax)
+	popq %rdi
+	movq %rdi, 472(%rax)
+	popq %rdi
+	movq %rdi, 480(%rax)
+	popq %rdi
+	movq %rdi, 488(%rax)
+	popq %rdi
+	movq %rdi, 496(%rax)
+	popq %rdi
+	movq %rdi, 504(%rax)
+	popq %rdi
+	movq %rdi, 512(%rax)
+	popq %rdi
+	movq %rdi, 520(%rax)
+	movq %rax, %rdi
+	movq %rdi, -544(%rbp)
+	movq -24(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $0, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -32(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -40(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -48(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $3, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -56(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -64(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $5, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -72(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $6, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -80(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $7, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -88(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $8, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -96(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $9, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -104(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $10, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -112(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $11, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -120(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $12, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -128(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $13, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -136(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $14, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -144(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $15, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -152(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $16, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -160(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $17, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -168(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $18, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -176(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $19, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -184(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $20, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -192(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $21, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -200(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $22, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -208(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $23, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -216(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $24, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -224(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $25, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -232(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $26, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -240(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $27, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -248(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $28, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -256(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $29, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -264(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $30, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -272(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $31, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -280(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $32, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -288(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $33, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -296(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $34, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -304(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $35, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -312(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $36, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -320(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $37, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -328(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $38, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -336(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $39, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -344(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $40, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -352(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $41, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -360(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $42, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -368(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $43, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -376(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $44, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -384(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $45, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -392(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $46, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -400(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $47, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -408(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $48, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -416(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $49, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -424(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $50, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -432(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $51, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -440(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $52, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -448(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $53, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -456(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $54, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -464(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $55, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -472(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $56, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -480(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $57, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -488(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $58, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -496(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $59, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -504(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $60, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -512(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $61, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -520(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $62, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	movq -528(%rbp), %rdi
+	pushq %rdi
+	movq -544(%rbp), %rdi
+	pushq %rdi
+	movq $63, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	movq 8(%rsi), %rsi
+	popq %rdi
+	cmpq $0, %rsi
+	jl index_out_of_bounds
+	movq 8(%rdi), %rcx
+	cmpq %rcx, %rsi
+	jge index_out_of_bounds
+	movq 16(%rdi,%rsi,8), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_equal
+	testq %rax, %rax
+	sete %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_print
+	call P_print_newline
+	xorq %rax, %rax
 	movq %rbp, %rsp
 	popq %rbp
 	ret
@@ -329,113 +5103,7 @@ P_print:
       popq    %rbp
       ret
 
-P_Biop_check_ops:
-      cmpq  $1,  %r12 # if r12 is neq
-      je P_Biop_True # if r12 is neq, return True
-      cmpq  $0,  %r12 # if r12 is eq
-      jne TypeError # if r12 is eq, return False
-      jmp P_Biop_True # if r12 is eq, return False
 
-P_Biop_int:
-      cmpq    $2, (%rsi) # if rsi is int
-      jne     P_Biop_check_ops
-      movq 8(%rdi), %rdi # get the value of the first argument
-      movq 8(%rsi), %rsi # get the value of the second argument
-      movq %rdi, %rax # move the value of the first argument to rax
-      subq %rsi, %rax # subtract the value of the second argument from rax
-      jmp P_Biop_End
-
-P_Biop_Bool:
-      cmpq    $1, (%rsi) # if rsi is bool
-      jne     P_Biop_check_ops # if rsi is not a boolean, return False
-      movq 8(%rdi), %rdi # get the value of the first argument
-      movq 8(%rsi), %rsi # get the value of the second argument
-      movq %rdi, %rax # move the value of the first argument to rax
-      subq %rsi, %rax # subtract the value of the second argument from rax
-      jmp P_Biop_End
-
-
-P_Biop_string:
-      cmpq    $3, (%rsi) # if rsi is string
-      jne     P_Biop_check_ops # if rsi is not a string, check the operator
-      movq 8(%rdi), %rax # get length of the first argument, keep it in rcx
-      cmpq $0, %rax # check if the first string is empty
-      je P_Biop_False # if it is empty, return False
-
-      # now we compare the strings
-      leaq 16(%rdi), %rdi # rdi points to the first character of the first string
-      leaq 16(%rsi), %rsi # rsi points to the first character of the second string
-P_Biop_string_loop:
-      testq %rcx, %rcx # check if we reached the end of the first string
-
-
-        movzbl (%rdi), %eax # temp1 = rdi[0] 
-      movzbl (%rsi), %ebx #  temp2 = rsi[0]
-      subl %ebx, %eax # subtract the second character from the first
-      movslq %eax, %rax  # sign-extend the result to rax
-
-      decq %rcx # move to the next character in the first string
-      incq %rdi # move to the next character in the first string
-      incq %rsi # move to the next character in the second string
-      jmp P_Biop_string_loop # repeat the loop
-
-P_Biop_list:
-      cmpq    $4, (%rsi) # if rsi is list
-      jne     P_Biop_check_ops
-
-      movq 8(%rdi), %rcx # len1 = arg1 length
-      movq 8(%rsi), %rdx # len2 = arg2 length
-      cmpq %rcx, %rdx #  b = len1 == len2
-      jne P_Biop_False # if b != True , return False
-      
-      movq $0, %rbx # i = 0, we will use rbx as the index for the loop
-P_Biop_list_loop:
-      cmpq %rbx, %rcx
-      je P_Biop_True # if we reached the end, return True
-
-      movq 16(%rdi, %rbx, 8), %r10  # r10 = left[i]
-      movq 16(%rsi, %rbx, 8), %r11  # r11 = right[i]
-      pushq %rdi # save rdi
-      pushq %rsi # save rsi
-      movq %r10, %rdi # move the first element of the first list to rdi
-      movq %r11, %rsi # move the first element of the second list to rsi
-      call P_Biop # P_Biop(left[i], right[i])
-      popq %rsi # restore rsi
-      popq %rdi # restore rdi
-      testq %rax, %rax
-      jne P_Biop_False
- 
-      incq %rbx # i++
-      jmp P_Biop_list_loop
-
-P_Biop_None: # rdi is None already, check rsi 
-      cmpq    $0, (%rsi) # if rsi is None
-      jne     P_Biop_False # if rsi is not None, return False
-      jmp     P_Biop_True # if rsi is None, return True
-P_Biop:
-      pushq   %rbp
-      movq    %rsp, %rbp
-      cmpq    $2, (%rdi) # if rdi is an integer
-      je      P_Biop_int # 
-      cmpq    $3, (%rdi) # if rdi is a string
-      je      P_Biop_string # 
-      cmpq    $4, (%rdi) # if rdi is a list
-      je      P_Biop_list #
-      cmpq    $0, (%rdi) # if rdi is None
-      je      P_Biop_None # 
-      cmpq    $1, (%rdi) # if rdi is a boolean
-      je      P_Biop_Bool #
-      jmp     P_Biop_False # if rdi is not a valid type, return False
-P_Biop_True:
-      movq    $1, %rax # if equal, return True
-      jmp    P_Biop_End # jump to End
-P_Biop_False:
-      movq    $0, %rax
-      jmp    P_Biop_End
-P_Biop_End:
-      movq    %rbp, %rsp
-      popq    %rbp
-      ret
 
 
 
@@ -793,6 +5461,485 @@ index_out_of_bounds:
       call printf
       movq $1, %rdi
       call exit
+P_equal:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    movq (%rdi), %rax        # load tag of first argument
+    movq (%rsi), %rbx        # load tag of second argument
+
+    cmpq $0, %rax
+    je P_equal_None
+
+    cmpq $1, %rax
+    je P_equal_int
+
+    cmpq $2, %rax
+    je P_equal_int
+
+    cmpq %rbx, %rax          # tag mismatch?
+    jne P_not_equal
+
+    cmpq $3, %rax
+    je P_equal_string
+
+    cmpq $4, %rax
+    je P_equal_list
+
+    # fallback to identity compare
+    cmpq %rdi, %rsi
+    sete %al
+    movzx %al, %rax
+    jmp P_equal_done
+
+P_equal_None:
+    cmpq $0, %rbx
+    je P_is_equal            # both are None
+    jmp P_not_equal
+
+P_equal_int:
+    cmpq $0, %rbx
+    je P_not_equal           # second argument is not an integer
+    cmpq $3, %rbx            #  is it a string?
+    je P_not_equal           # second argument is not an integer
+    cmpq $4, %rbx            # is it a list?
+    je P_not_equal           # second argument is not an integer
+
+    movq 8(%rdi), %rax       # value1
+    movq 8(%rsi), %rbx       # value2
+    subq %rbx, %rax
+    jmp P_equal_done
+
+P_equal_string:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jne P_not_equal
+    testq %rax, %rax
+    jz P_equal_done            # both length 0 = equal
+
+    leaq 16(%rdi), %rdi      # str1 content
+    leaq 16(%rsi), %rsi      # str2 content
+    movq %rax, %rcx          # counter = length
+
+P_equal_string_loop:
+    testq %rcx, %rcx
+    jz P_is_equal
+    movzbq (%rdi), %rax
+    movzbq (%rsi), %rbx
+    cmpq %rax, %rbx
+    jne P_not_equal
+    inc %rdi
+    inc %rsi
+    dec %rcx
+    jmp P_equal_string_loop
+
+P_equal_list:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jne P_not_equal
+    testq %rax, %rax
+    jz P_equal_done
+
+    leaq 16(%rdi), %rdi      # elements1
+    leaq 16(%rsi), %rsi      # elements2
+    movq %rax, %rcx          # counter = length
+
+P_equal_list_loop:
+    testq %rcx, %rcx
+    jz P_equal_done
+
+    movq (%rdi), %rax        # load element1
+    movq (%rsi), %rbx        # load element2
+    pushq %rcx
+    pushq %rdi
+    pushq %rsi
+    movq %rax, %rdi
+    movq %rbx, %rsi
+    call P_equal
+    popq %rsi
+    popq %rdi
+    popq %rcx
+    testq %rax, %rax
+    jne P_equal_done
+
+    addq $8, %rdi
+    addq $8, %rsi
+    dec %rcx
+    jmp P_equal_list_loop
+
+P_is_equal:
+    movq $0, %rax            # return 0 = True
+    jmp P_equal_done
+
+P_not_equal:
+    movq $1, %rax            # return 1 = False
+
+P_equal_done:
+    movq %rbp, %rsp
+    popq %rbp
+    ret
+P_le:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    movq (%rdi), %rax        # load tag of first argument
+    movq (%rsi), %rbx        # load tag of second argument
+
+    cmpq $0, %rax
+    je TypeError
+
+    cmpq $1, %rax #bool
+    je P_equal_int
+
+    cmpq $2, %rax #int
+    je P_equal_int
+
+    cmpq %rbx, %rax
+    jne TypeError  # if tag different
+
+    cmpq $3, %rax
+    je P_le_string
+
+    cmpq $4, %rax
+    je P_le_list
+
+    # fallback to identity compare
+    cmpq %rdi, %rsi
+    setle %al
+    movzx %al, %rax
+    jmp P_le_done
+P_le_string:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jg P_le_done              # if length1 > length2, return False
+    testq %rax, %rax
+    jz P_le_done              # if both lengths are 0, return True
+
+    leaq 16(%rdi), %rdi      # str1 content
+    leaq 16(%rsi), %rsi      # str2 content
+    movq %rax, %rcx          # counter = length
+P_le_string_loop:
+    testq %rcx, %rcx
+    jz P_le_done              # if counter is 0, return True
+    movzbq (%rdi), %rax       # load byte from str1
+    movzbq (%rsi), %rbx       # load byte from str2
+    cmpq %rax, %rbx
+    jl P_le_done              # if byte1 < byte2, return True
+    jne P_gt_done             # if byte1 != byte2, return False
+    inc %rdi                  # move to next byte in str1
+    inc %rsi                  # move to next byte in str2
+    dec %rcx                  # decrement counter
+    jmp P_le_string_loop
+P_le_list:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jg P_le_done              # if length1 > length2, return False
+    testq %rax, %rax
+    jz P_le_done              # if both lengths are 0, return True
+
+    leaq 16(%rdi), %rdi      # elements1
+    leaq 16(%rsi), %rsi      # elements2
+    movq %rax, %rcx          # counter = length
+P_le_list_loop:
+    testq %rcx, %rcx
+    jz P_le_done              # if counter is 0, return True
+
+    movq (%rdi), %rax        # load element1
+    movq (%rsi), %rbx        # load element2
+    pushq %rcx
+    pushq %rdi
+    pushq %rsi
+    movq %rax, %rdi
+    movq %rbx, %rsi
+    call P_le
+    popq %rsi
+    popq %rdi
+    popq %rcx
+    testq %rax, %rax
+    jne P_le_done
+
+    addq $8, %rdi
+    addq $8, %rsi
+    dec %rcx
+    jmp P_le_list_loop
+P_le_done:
+    movq %rbp, %rsp
+    popq %rbp
+    ret
+P_lt:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    movq (%rdi), %rax        # load tag of first argument
+    movq (%rsi), %rbx        # load tag of second argument
+
+    cmpq $0, %rax
+    je TypeError
+
+    cmpq $1, %rax #bool
+    je P_equal_int
+
+    cmpq $2, %rax #int
+    je P_equal_int
+
+    cmpq %rbx, %rax
+    jne TypeError  # if tag different
+
+    cmpq $3, %rax
+    je P_lt_string
+
+    cmpq $4, %rax
+    je P_lt_list
+
+    # fallback to identity compare
+    cmpq %rdi, %rsi
+    setl %al
+    movzx %al, %rax
+    jmp P_lt_done
+P_lt_string:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jge P_lt_done             # if length1 >= length2, return False
+    testq %rax, %rax
+    jz P_lt_done              # if both lengths are 0, return False
+
+    leaq 16(%rdi), %rdi      # str1 content
+    leaq 16(%rsi), %rsi      # str2 content
+    movq %rax, %rcx          # counter = length
+P_lt_string_loop:
+    testq %rcx, %rcx
+    jz P_lt_done              # if counter is 0, return False
+    movzbq (%rdi), %rax       # load byte from str1
+    movzbq (%rsi), %rbx       # load byte from str2
+    cmpq %rax, %rbx
+    jge P_lt_done             # if byte1 >= byte2, return False
+    jne P_gt_done             # if byte1 != byte2, return True
+    inc %rdi                  # move to next byte in str1
+    inc %rsi                  # move to next byte in str2
+    dec %rcx                  # decrement counter
+    jmp P_lt_string_loop
+P_lt_list:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jge P_lt_done             # if length1 >= length2, return False
+    testq %rax, %rax
+    jz P_lt_done              # if both lengths are 0, return False
+
+    leaq 16(%rdi), %rdi      # elements1
+    leaq 16(%rsi), %rsi      # elements2
+    movq %rax, %rcx          # counter = length
+P_lt_list_loop:
+    testq %rcx, %rcx
+    jz P_lt_done              # if counter is 0, return False
+
+    movq (%rdi), %rax        # load element1
+    movq (%rsi), %rbx        # load element2
+    pushq %rcx
+    pushq %rdi
+    pushq %rsi
+    movq %rax, %rdi
+    movq %rbx, %rsi
+    call P_lt
+    popq %rsi
+    popq %rdi
+    popq %rcx
+    testq %rax, %rax
+    jne P_lt_done
+
+    addq $8, %rdi
+    addq $8, %rsi
+    dec %rcx
+    jmp P_lt_list_loop
+P_lt_done:
+    movq %rbp, %rsp
+    popq %rbp
+    ret
+P_ge:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    movq (%rdi), %rax        # load tag of first argument
+    movq (%rsi), %rbx        # load tag of second argument
+
+    cmpq $0, %rax
+    je TypeError
+
+    cmpq $1, %rax #bool
+    je P_equal_int
+
+    cmpq $2, %rax #int
+    je P_equal_int
+
+    cmpq %rbx, %rax
+    jne TypeError  # if tag different
+
+    cmpq $3, %rax
+    je P_ge_string
+
+    cmpq $4, %rax
+    je P_ge_list
+
+    # fallback to identity compare
+    cmpq %rdi, %rsi
+    setge %al
+    movzx %al, %rax
+    jmp P_ge_done
+P_ge_string:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jl P_ge_done              # if length1 < length2, return False
+    testq %rax, %rax
+    jz P_ge_done              # if both lengths are 0, return True
+
+    leaq 16(%rdi), %rdi      # str1 content
+    leaq 16(%rsi), %rsi      # str2 content
+    movq %rax, %rcx          # counter = length
+P_ge_string_loop:
+    testq %rcx, %rcx
+    jz P_ge_done              # if counter is 0, return True
+    movzbq (%rdi), %rax       # load byte from str1
+    movzbq (%rsi), %rbx       # load byte from str2
+    cmpq %rax, %rbx
+    jg P_ge_done              # if byte1 > byte2, return True
+    jne P_gt_done             # if byte1 != byte2, return False
+    inc %rdi                  # move to next byte in str1
+    inc %rsi                  # move to next byte in str2
+    dec %rcx                  # decrement counter
+    jmp P_ge_string_loop
+P_ge_list:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jl P_ge_done              # if length1 < length2, return False
+    testq %rax, %rax
+    jz P_ge_done              # if both lengths are 0, return True
+
+    leaq 16(%rdi), %rdi      # elements1
+    leaq 16(%rsi), %rsi      # elements2
+    movq %rax, %rcx          # counter = length
+P_ge_list_loop:
+    testq %rcx, %rcx
+    jz P_ge_done              # if counter is 0, return True
+
+    movq (%rdi), %rax        # load element1
+    movq (%rsi), %rbx        # load element2
+    pushq %rcx
+    pushq %rdi
+    pushq %rsi
+    movq %rax, %rdi
+    movq %rbx, %rsi
+    call P_ge
+    popq %rsi
+    popq %rdi
+    popq %rcx
+    testq %rax, %rax
+    jne P_ge_done
+
+    addq $8, %rdi
+    addq $8, %rsi
+    dec %rcx
+    jmp P_ge_list_loop
+P_ge_done:
+    movq %rbp, %rsp
+    popq %rbp
+    ret
+P_gt:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    movq (%rdi), %rax        # load tag of first argument
+    movq (%rsi), %rbx        # load tag of second argument
+
+    cmpq $0, %rax
+    je TypeError
+
+    cmpq $1, %rax #bool
+    je P_equal_int
+
+    cmpq $2, %rax #int
+    je P_equal_int
+
+    cmpq %rbx, %rax
+    jne TypeError  # if tag different
+
+    cmpq $3, %rax
+    je P_gt_string
+
+    cmpq $4, %rax
+    je P_gt_list
+
+    # fallback to identity compare
+    cmpq %rdi, %rsi
+    setg %al
+    movzx %al, %rax
+    jmp P_gt_done
+P_gt_string:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jle P_gt_done             # if length1 <= length2, return False
+    testq %rax, %rax
+    jz P_gt_done              # if both lengths are 0, return False
+
+    leaq 16(%rdi), %rdi      # str1 content
+    leaq 16(%rsi), %rsi      # str2 content
+    movq %rax, %rcx          # counter = length
+P_gt_string_loop:
+    testq %rcx, %rcx
+    jz P_gt_done              # if counter is 0, return False
+    movzbq (%rdi), %rax       # load byte from str1
+    movzbq (%rsi), %rbx       # load byte from str2
+    cmpq %rax, %rbx
+    jle P_gt_done             # if byte1 <= byte2, return False
+    jne P_gt_done             # if byte1 != byte2, return True
+    inc %rdi                  # move to next byte in str1
+    inc %rsi                  # move to next byte in str2
+    dec %rcx                  # decrement counter
+    jmp P_gt_string_loop
+P_gt_list:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jle P_gt_done             # if length1 <= length2, return False
+    testq %rax, %rax
+    jz P_gt_done              # if both lengths are 0, return False
+
+    leaq 16(%rdi), %rdi      # elements1
+    leaq 16(%rsi), %rsi      # elements2
+    movq %rax, %rcx          # counter = length
+P_gt_list_loop:
+    testq %rcx, %rcx
+    jz P_gt_done              # if counter is 0, return False
+
+    movq (%rdi), %rax        # load element1
+    movq (%rsi), %rbx        # load element2
+    pushq %rcx
+    pushq %rdi
+    pushq %rsi
+    movq %rax, %rdi
+    movq %rbx, %rsi
+    call P_gt
+    popq %rsi
+    popq %rdi
+    popq %rcx
+    testq %rax, %rax
+    jne P_gt_done
+
+    addq $8, %rdi
+    addq $8, %rsi
+    dec %rcx
+    jmp P_gt_list_loop
+P_gt_done:
+    movq %rbp, %rsp
+    popq %rbp
+    ret
 
 	.data
 
@@ -829,3 +5976,9 @@ C_False:
 C_True:
   .quad 1
   .quad 1
+S_2:
+	.quad 3, 1
+	.string "1"
+S_1:
+	.quad 3, 1
+	.string "1"

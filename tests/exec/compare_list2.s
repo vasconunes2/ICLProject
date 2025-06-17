@@ -61,8 +61,7 @@ main:
 	movq %rax, %rdi
 	movq %rdi, %rsi
 	popq %rdi
-	movq $1, %r12
-	call P_Biop
+	call P_equal
 	testq %rax, %rax
 	setne %al
 	movq $C_True, %rdi
@@ -140,8 +139,7 @@ main:
 	movq %rax, %rdi
 	movq %rdi, %rsi
 	popq %rdi
-	movq $0, %r12
-	call P_Biop
+	call P_equal
 	testq %rax, %rax
 	sete %al
 	movq $C_True, %rdi
@@ -219,8 +217,7 @@ main:
 	movq %rax, %rdi
 	movq %rdi, %rsi
 	popq %rdi
-	movq $0, %r12
-	call P_Biop
+	call P_equal
 	testq %rax, %rax
 	sete %al
 	movq $C_True, %rdi
@@ -272,8 +269,7 @@ main:
 	movq %rax, %rdi
 	movq %rdi, %rsi
 	popq %rdi
-	movq $0, %r12
-	call P_Biop
+	call P_equal
 	testq %rax, %rax
 	sete %al
 	movq $C_True, %rdi
@@ -492,113 +488,7 @@ P_print:
       popq    %rbp
       ret
 
-P_Biop_check_ops:
-      cmpq  $1,  %r12 # if r12 is neq
-      je P_Biop_True # if r12 is neq, return True
-      cmpq  $0,  %r12 # if r12 is eq
-      jne TypeError # if r12 is eq, return False
-      jmp P_Biop_True # if r12 is eq, return False
 
-P_Biop_int:
-      cmpq    $2, (%rsi) # if rsi is int
-      jne     P_Biop_check_ops
-      movq 8(%rdi), %rdi # get the value of the first argument
-      movq 8(%rsi), %rsi # get the value of the second argument
-      movq %rdi, %rax # move the value of the first argument to rax
-      subq %rsi, %rax # subtract the value of the second argument from rax
-      jmp P_Biop_End
-
-P_Biop_Bool:
-      cmpq    $1, (%rsi) # if rsi is bool
-      jne     P_Biop_check_ops # if rsi is not a boolean, return False
-      movq 8(%rdi), %rdi # get the value of the first argument
-      movq 8(%rsi), %rsi # get the value of the second argument
-      movq %rdi, %rax # move the value of the first argument to rax
-      subq %rsi, %rax # subtract the value of the second argument from rax
-      jmp P_Biop_End
-
-
-P_Biop_string:
-      cmpq    $3, (%rsi) # if rsi is string
-      jne     P_Biop_check_ops # if rsi is not a string, check the operator
-      movq 8(%rdi), %rax # get length of the first argument, keep it in rcx
-      cmpq $0, %rax # check if the first string is empty
-      je P_Biop_False # if it is empty, return False
-
-      # now we compare the strings
-      leaq 16(%rdi), %rdi # rdi points to the first character of the first string
-      leaq 16(%rsi), %rsi # rsi points to the first character of the second string
-P_Biop_string_loop:
-      testq %rcx, %rcx # check if we reached the end of the first string
-
-
-        movzbl (%rdi), %eax # temp1 = rdi[0] 
-      movzbl (%rsi), %ebx #  temp2 = rsi[0]
-      subl %ebx, %eax # subtract the second character from the first
-      movslq %eax, %rax  # sign-extend the result to rax
-
-      decq %rcx # move to the next character in the first string
-      incq %rdi # move to the next character in the first string
-      incq %rsi # move to the next character in the second string
-      jmp P_Biop_string_loop # repeat the loop
-
-P_Biop_list:
-      cmpq    $4, (%rsi) # if rsi is list
-      jne     P_Biop_check_ops
-
-      movq 8(%rdi), %rcx # len1 = arg1 length
-      movq 8(%rsi), %rdx # len2 = arg2 length
-      cmpq %rcx, %rdx #  b = len1 == len2
-      jne P_Biop_False # if b != True , return False
-      
-      movq $0, %rbx # i = 0, we will use rbx as the index for the loop
-P_Biop_list_loop:
-      cmpq %rbx, %rcx
-      je P_Biop_True # if we reached the end, return True
-
-      movq 16(%rdi, %rbx, 8), %r10  # r10 = left[i]
-      movq 16(%rsi, %rbx, 8), %r11  # r11 = right[i]
-      pushq %rdi # save rdi
-      pushq %rsi # save rsi
-      movq %r10, %rdi # move the first element of the first list to rdi
-      movq %r11, %rsi # move the first element of the second list to rsi
-      call P_Biop # P_Biop(left[i], right[i])
-      popq %rsi # restore rsi
-      popq %rdi # restore rdi
-      testq %rax, %rax
-      jne P_Biop_False
- 
-      incq %rbx # i++
-      jmp P_Biop_list_loop
-
-P_Biop_None: # rdi is None already, check rsi 
-      cmpq    $0, (%rsi) # if rsi is None
-      jne     P_Biop_False # if rsi is not None, return False
-      jmp     P_Biop_True # if rsi is None, return True
-P_Biop:
-      pushq   %rbp
-      movq    %rsp, %rbp
-      cmpq    $2, (%rdi) # if rdi is an integer
-      je      P_Biop_int # 
-      cmpq    $3, (%rdi) # if rdi is a string
-      je      P_Biop_string # 
-      cmpq    $4, (%rdi) # if rdi is a list
-      je      P_Biop_list #
-      cmpq    $0, (%rdi) # if rdi is None
-      je      P_Biop_None # 
-      cmpq    $1, (%rdi) # if rdi is a boolean
-      je      P_Biop_Bool #
-      jmp     P_Biop_False # if rdi is not a valid type, return False
-P_Biop_True:
-      movq    $1, %rax # if equal, return True
-      jmp    P_Biop_End # jump to End
-P_Biop_False:
-      movq    $0, %rax
-      jmp    P_Biop_End
-P_Biop_End:
-      movq    %rbp, %rsp
-      popq    %rbp
-      ret
 
 
 
@@ -956,6 +846,485 @@ index_out_of_bounds:
       call printf
       movq $1, %rdi
       call exit
+P_equal:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    movq (%rdi), %rax        # load tag of first argument
+    movq (%rsi), %rbx        # load tag of second argument
+
+    cmpq $0, %rax
+    je P_equal_None
+
+    cmpq $1, %rax
+    je P_equal_int
+
+    cmpq $2, %rax
+    je P_equal_int
+
+    cmpq %rbx, %rax          # tag mismatch?
+    jne P_not_equal
+
+    cmpq $3, %rax
+    je P_equal_string
+
+    cmpq $4, %rax
+    je P_equal_list
+
+    # fallback to identity compare
+    cmpq %rdi, %rsi
+    sete %al
+    movzx %al, %rax
+    jmp P_equal_done
+
+P_equal_None:
+    cmpq $0, %rbx
+    je P_is_equal            # both are None
+    jmp P_not_equal
+
+P_equal_int:
+    cmpq $0, %rbx
+    je P_not_equal           # second argument is not an integer
+    cmpq $3, %rbx            #  is it a string?
+    je P_not_equal           # second argument is not an integer
+    cmpq $4, %rbx            # is it a list?
+    je P_not_equal           # second argument is not an integer
+
+    movq 8(%rdi), %rax       # value1
+    movq 8(%rsi), %rbx       # value2
+    subq %rbx, %rax
+    jmp P_equal_done
+
+P_equal_string:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jne P_not_equal
+    testq %rax, %rax
+    jz P_equal_done            # both length 0 = equal
+
+    leaq 16(%rdi), %rdi      # str1 content
+    leaq 16(%rsi), %rsi      # str2 content
+    movq %rax, %rcx          # counter = length
+
+P_equal_string_loop:
+    testq %rcx, %rcx
+    jz P_is_equal
+    movzbq (%rdi), %rax
+    movzbq (%rsi), %rbx
+    cmpq %rax, %rbx
+    jne P_not_equal
+    inc %rdi
+    inc %rsi
+    dec %rcx
+    jmp P_equal_string_loop
+
+P_equal_list:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jne P_not_equal
+    testq %rax, %rax
+    jz P_equal_done
+
+    leaq 16(%rdi), %rdi      # elements1
+    leaq 16(%rsi), %rsi      # elements2
+    movq %rax, %rcx          # counter = length
+
+P_equal_list_loop:
+    testq %rcx, %rcx
+    jz P_equal_done
+
+    movq (%rdi), %rax        # load element1
+    movq (%rsi), %rbx        # load element2
+    pushq %rcx
+    pushq %rdi
+    pushq %rsi
+    movq %rax, %rdi
+    movq %rbx, %rsi
+    call P_equal
+    popq %rsi
+    popq %rdi
+    popq %rcx
+    testq %rax, %rax
+    jne P_equal_done
+
+    addq $8, %rdi
+    addq $8, %rsi
+    dec %rcx
+    jmp P_equal_list_loop
+
+P_is_equal:
+    movq $0, %rax            # return 0 = True
+    jmp P_equal_done
+
+P_not_equal:
+    movq $1, %rax            # return 1 = False
+
+P_equal_done:
+    movq %rbp, %rsp
+    popq %rbp
+    ret
+P_le:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    movq (%rdi), %rax        # load tag of first argument
+    movq (%rsi), %rbx        # load tag of second argument
+
+    cmpq $0, %rax
+    je TypeError
+
+    cmpq $1, %rax #bool
+    je P_equal_int
+
+    cmpq $2, %rax #int
+    je P_equal_int
+
+    cmpq %rbx, %rax
+    jne TypeError  # if tag different
+
+    cmpq $3, %rax
+    je P_le_string
+
+    cmpq $4, %rax
+    je P_le_list
+
+    # fallback to identity compare
+    cmpq %rdi, %rsi
+    setle %al
+    movzx %al, %rax
+    jmp P_le_done
+P_le_string:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jg P_le_done              # if length1 > length2, return False
+    testq %rax, %rax
+    jz P_le_done              # if both lengths are 0, return True
+
+    leaq 16(%rdi), %rdi      # str1 content
+    leaq 16(%rsi), %rsi      # str2 content
+    movq %rax, %rcx          # counter = length
+P_le_string_loop:
+    testq %rcx, %rcx
+    jz P_le_done              # if counter is 0, return True
+    movzbq (%rdi), %rax       # load byte from str1
+    movzbq (%rsi), %rbx       # load byte from str2
+    cmpq %rax, %rbx
+    jl P_le_done              # if byte1 < byte2, return True
+    jne P_gt_done             # if byte1 != byte2, return False
+    inc %rdi                  # move to next byte in str1
+    inc %rsi                  # move to next byte in str2
+    dec %rcx                  # decrement counter
+    jmp P_le_string_loop
+P_le_list:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jg P_le_done              # if length1 > length2, return False
+    testq %rax, %rax
+    jz P_le_done              # if both lengths are 0, return True
+
+    leaq 16(%rdi), %rdi      # elements1
+    leaq 16(%rsi), %rsi      # elements2
+    movq %rax, %rcx          # counter = length
+P_le_list_loop:
+    testq %rcx, %rcx
+    jz P_le_done              # if counter is 0, return True
+
+    movq (%rdi), %rax        # load element1
+    movq (%rsi), %rbx        # load element2
+    pushq %rcx
+    pushq %rdi
+    pushq %rsi
+    movq %rax, %rdi
+    movq %rbx, %rsi
+    call P_le
+    popq %rsi
+    popq %rdi
+    popq %rcx
+    testq %rax, %rax
+    jne P_le_done
+
+    addq $8, %rdi
+    addq $8, %rsi
+    dec %rcx
+    jmp P_le_list_loop
+P_le_done:
+    movq %rbp, %rsp
+    popq %rbp
+    ret
+P_lt:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    movq (%rdi), %rax        # load tag of first argument
+    movq (%rsi), %rbx        # load tag of second argument
+
+    cmpq $0, %rax
+    je TypeError
+
+    cmpq $1, %rax #bool
+    je P_equal_int
+
+    cmpq $2, %rax #int
+    je P_equal_int
+
+    cmpq %rbx, %rax
+    jne TypeError  # if tag different
+
+    cmpq $3, %rax
+    je P_lt_string
+
+    cmpq $4, %rax
+    je P_lt_list
+
+    # fallback to identity compare
+    cmpq %rdi, %rsi
+    setl %al
+    movzx %al, %rax
+    jmp P_lt_done
+P_lt_string:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jge P_lt_done             # if length1 >= length2, return False
+    testq %rax, %rax
+    jz P_lt_done              # if both lengths are 0, return False
+
+    leaq 16(%rdi), %rdi      # str1 content
+    leaq 16(%rsi), %rsi      # str2 content
+    movq %rax, %rcx          # counter = length
+P_lt_string_loop:
+    testq %rcx, %rcx
+    jz P_lt_done              # if counter is 0, return False
+    movzbq (%rdi), %rax       # load byte from str1
+    movzbq (%rsi), %rbx       # load byte from str2
+    cmpq %rax, %rbx
+    jge P_lt_done             # if byte1 >= byte2, return False
+    jne P_gt_done             # if byte1 != byte2, return True
+    inc %rdi                  # move to next byte in str1
+    inc %rsi                  # move to next byte in str2
+    dec %rcx                  # decrement counter
+    jmp P_lt_string_loop
+P_lt_list:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jge P_lt_done             # if length1 >= length2, return False
+    testq %rax, %rax
+    jz P_lt_done              # if both lengths are 0, return False
+
+    leaq 16(%rdi), %rdi      # elements1
+    leaq 16(%rsi), %rsi      # elements2
+    movq %rax, %rcx          # counter = length
+P_lt_list_loop:
+    testq %rcx, %rcx
+    jz P_lt_done              # if counter is 0, return False
+
+    movq (%rdi), %rax        # load element1
+    movq (%rsi), %rbx        # load element2
+    pushq %rcx
+    pushq %rdi
+    pushq %rsi
+    movq %rax, %rdi
+    movq %rbx, %rsi
+    call P_lt
+    popq %rsi
+    popq %rdi
+    popq %rcx
+    testq %rax, %rax
+    jne P_lt_done
+
+    addq $8, %rdi
+    addq $8, %rsi
+    dec %rcx
+    jmp P_lt_list_loop
+P_lt_done:
+    movq %rbp, %rsp
+    popq %rbp
+    ret
+P_ge:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    movq (%rdi), %rax        # load tag of first argument
+    movq (%rsi), %rbx        # load tag of second argument
+
+    cmpq $0, %rax
+    je TypeError
+
+    cmpq $1, %rax #bool
+    je P_equal_int
+
+    cmpq $2, %rax #int
+    je P_equal_int
+
+    cmpq %rbx, %rax
+    jne TypeError  # if tag different
+
+    cmpq $3, %rax
+    je P_ge_string
+
+    cmpq $4, %rax
+    je P_ge_list
+
+    # fallback to identity compare
+    cmpq %rdi, %rsi
+    setge %al
+    movzx %al, %rax
+    jmp P_ge_done
+P_ge_string:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jl P_ge_done              # if length1 < length2, return False
+    testq %rax, %rax
+    jz P_ge_done              # if both lengths are 0, return True
+
+    leaq 16(%rdi), %rdi      # str1 content
+    leaq 16(%rsi), %rsi      # str2 content
+    movq %rax, %rcx          # counter = length
+P_ge_string_loop:
+    testq %rcx, %rcx
+    jz P_ge_done              # if counter is 0, return True
+    movzbq (%rdi), %rax       # load byte from str1
+    movzbq (%rsi), %rbx       # load byte from str2
+    cmpq %rax, %rbx
+    jg P_ge_done              # if byte1 > byte2, return True
+    jne P_gt_done             # if byte1 != byte2, return False
+    inc %rdi                  # move to next byte in str1
+    inc %rsi                  # move to next byte in str2
+    dec %rcx                  # decrement counter
+    jmp P_ge_string_loop
+P_ge_list:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jl P_ge_done              # if length1 < length2, return False
+    testq %rax, %rax
+    jz P_ge_done              # if both lengths are 0, return True
+
+    leaq 16(%rdi), %rdi      # elements1
+    leaq 16(%rsi), %rsi      # elements2
+    movq %rax, %rcx          # counter = length
+P_ge_list_loop:
+    testq %rcx, %rcx
+    jz P_ge_done              # if counter is 0, return True
+
+    movq (%rdi), %rax        # load element1
+    movq (%rsi), %rbx        # load element2
+    pushq %rcx
+    pushq %rdi
+    pushq %rsi
+    movq %rax, %rdi
+    movq %rbx, %rsi
+    call P_ge
+    popq %rsi
+    popq %rdi
+    popq %rcx
+    testq %rax, %rax
+    jne P_ge_done
+
+    addq $8, %rdi
+    addq $8, %rsi
+    dec %rcx
+    jmp P_ge_list_loop
+P_ge_done:
+    movq %rbp, %rsp
+    popq %rbp
+    ret
+P_gt:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    movq (%rdi), %rax        # load tag of first argument
+    movq (%rsi), %rbx        # load tag of second argument
+
+    cmpq $0, %rax
+    je TypeError
+
+    cmpq $1, %rax #bool
+    je P_equal_int
+
+    cmpq $2, %rax #int
+    je P_equal_int
+
+    cmpq %rbx, %rax
+    jne TypeError  # if tag different
+
+    cmpq $3, %rax
+    je P_gt_string
+
+    cmpq $4, %rax
+    je P_gt_list
+
+    # fallback to identity compare
+    cmpq %rdi, %rsi
+    setg %al
+    movzx %al, %rax
+    jmp P_gt_done
+P_gt_string:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jle P_gt_done             # if length1 <= length2, return False
+    testq %rax, %rax
+    jz P_gt_done              # if both lengths are 0, return False
+
+    leaq 16(%rdi), %rdi      # str1 content
+    leaq 16(%rsi), %rsi      # str2 content
+    movq %rax, %rcx          # counter = length
+P_gt_string_loop:
+    testq %rcx, %rcx
+    jz P_gt_done              # if counter is 0, return False
+    movzbq (%rdi), %rax       # load byte from str1
+    movzbq (%rsi), %rbx       # load byte from str2
+    cmpq %rax, %rbx
+    jle P_gt_done             # if byte1 <= byte2, return False
+    jne P_gt_done             # if byte1 != byte2, return True
+    inc %rdi                  # move to next byte in str1
+    inc %rsi                  # move to next byte in str2
+    dec %rcx                  # decrement counter
+    jmp P_gt_string_loop
+P_gt_list:
+    movq 8(%rdi), %rax       # length1
+    movq 8(%rsi), %rbx       # length2
+    cmpq %rbx, %rax
+    jle P_gt_done             # if length1 <= length2, return False
+    testq %rax, %rax
+    jz P_gt_done              # if both lengths are 0, return False
+
+    leaq 16(%rdi), %rdi      # elements1
+    leaq 16(%rsi), %rsi      # elements2
+    movq %rax, %rcx          # counter = length
+P_gt_list_loop:
+    testq %rcx, %rcx
+    jz P_gt_done              # if counter is 0, return False
+
+    movq (%rdi), %rax        # load element1
+    movq (%rsi), %rbx        # load element2
+    pushq %rcx
+    pushq %rdi
+    pushq %rsi
+    movq %rax, %rdi
+    movq %rbx, %rsi
+    call P_gt
+    popq %rsi
+    popq %rdi
+    popq %rcx
+    testq %rax, %rax
+    jne P_gt_done
+
+    addq $8, %rdi
+    addq $8, %rsi
+    dec %rcx
+    jmp P_gt_list_loop
+P_gt_done:
+    movq %rbp, %rsp
+    popq %rbp
+    ret
 
 	.data
 
