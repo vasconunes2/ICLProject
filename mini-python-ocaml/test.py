@@ -1,8 +1,17 @@
-x = 42
-print(x)
-for x in [1,2,3]:
-    print(x)
-print(x)
+def f(i, j):
+    if i >= j:
+        return []
+    return [i] + f(i+1, j)
+
+print([1,2] + [3,4,5])
+print(f(4, 7))
+
+
+# x = 42
+# print(x)
+# for x in [1,2,3]:
+#     print(x)
+# print(x)
 
 # row = [1, 2, 3]
 # badmatrix = [row, row, row]

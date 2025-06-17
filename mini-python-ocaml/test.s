@@ -3,23 +3,31 @@
 main:
 	pushq %rbp
 	movq %rsp, %rbp
-	subq $8, %rsp
-	movq $42, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	movq %rdi, -8(%rbp)
-	movq -8(%rbp), %rdi
-	call P_print
-	call P_print_newline
-	movq $3, %rdi
-	call P_alloc_int
-	movq %rax, %rdi
-	pushq %rdi
 	movq $2, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
 	pushq %rdi
 	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $2, %rdi
+	call P_alloc_list
+	popq %rdi
+	movq %rdi, 16(%rax)
+	popq %rdi
+	movq %rdi, 24(%rax)
+	movq %rax, %rdi
+	pushq %rdi
+	movq $5, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $3, %rdi
 	call P_alloc_int
 	movq %rax, %rdi
 	pushq %rdi
@@ -32,30 +40,86 @@ main:
 	popq %rdi
 	movq %rdi, 32(%rax)
 	movq %rax, %rdi
-	movq 8(%rdi), %rcx
-	leaq 16(%rdi,%rcx,8), %rcx
-	pushq %rcx
-	leaq 16(%rdi), %rcx
-	pushq %rcx
-L_2:
-	movq 0(%rsp), %rdi
-	movq 8(%rsp), %rsi
-	cmpq %rsi, %rdi
-	je L_3
-	movq 0(%rdi), %rcx
-	movq %rcx, -8(%rbp)
-	addq $8, %rdi
-	movq %rdi, 0(%rsp)
-	movq -8(%rbp), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_add
+	movq %rax, %rdi
 	call P_print
 	call P_print_newline
-	jmp L_2
-L_3:
+	movq $7, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	movq $4, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	pushq %rdi
+	call F_f
 	addq $16, %rsp
-	movq -8(%rbp), %rdi
+	movq %rax, %rdi
 	call P_print
 	call P_print_newline
 	xorq %rax, %rax
+	movq %rbp, %rsp
+	popq %rbp
+	ret
+F_f:
+	pushq %rbp
+	movq %rsp, %rbp
+	movq 16(%rbp), %rdi
+	pushq %rdi
+	movq 24(%rbp), %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_Biop
+	testq %rax, %rax
+	setge %al
+	movq $C_True, %rdi
+	movq $C_False, %rsi
+	testb %al, %al
+	cmovz %rsi, %rdi
+	call P_test
+	testq %rax, %rax
+	jz L_3
+	movq $0, %rdi
+	call P_alloc_list
+	movq %rax, %rdi
+	movq %rdi, %rax
+	jmp L_2
+	jmp L_4
+L_3:
+L_4:
+	movq 16(%rbp), %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_list
+	popq %rdi
+	movq %rdi, 16(%rax)
+	movq %rax, %rdi
+	pushq %rdi
+	movq 24(%rbp), %rdi
+	pushq %rdi
+	movq 16(%rbp), %rdi
+	pushq %rdi
+	movq $1, %rdi
+	call P_alloc_int
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_add
+	movq %rax, %rdi
+	pushq %rdi
+	call F_f
+	addq $16, %rsp
+	movq %rax, %rdi
+	movq %rdi, %rsi
+	popq %rdi
+	call P_add
+	movq %rax, %rdi
+	movq %rdi, %rax
+	jmp L_2
+	movq $C_None, %rax
+L_2:
 	movq %rbp, %rsp
 	popq %rbp
 	ret
@@ -493,7 +557,8 @@ TypeValid:
 P_add:
     pushq   %rbp
     movq    %rsp, %rbp
-
+    cmpq    $4, (%rdi)     # is a1 a list?
+    je      add_list
     cmpq    $3, (%rdi)     # is a1 a string?
     je      add_str
     cmpq    $2, (%rdi)     # is a1 an integer?
@@ -510,6 +575,52 @@ P_add:
 
     movq    $2, (%rax)     # type = integer
     movq    %r14, 8(%rax)  # store result value in new object
+    jmp done
+add_list:
+    cmpq    $4, (%rsi)
+    jne     TypeError # if a2 is not a list, raise TypeError
+    
+    pushq   %rsi # save a2
+    pushq   %rdi # save a1
+    
+    movq    8(%rdi), %rdi # length of a1
+    addq    8(%rsi), %rdi # total length = a1.len + a2.len
+    pushq %rdi
+
+    shlq    $3, %rdi
+    addq    $16, %rdi
+    call    malloc
+    testq   %rax, %rax # alloc list
+    jz      malloc_failed
+    popq   %rdi # restore rdi
+    # Now, %rax points to the new list object
+    movq    $4, (%rax) # rax.tag = 4
+    movq    %rdi, 8(%rax) # rax.len =  total length
+
+    popq   %rsi # restore a1 to rsi
+    movq    8(%rsi), %rdx # rsi = a1.len
+    testq   %rdx, %rdx
+    jz      copy_a2_data
+
+    movq    8(%rsi), %rdx # rsi = a1
+    shlq    $3, %rdx
+    leaq    16(%rax), %rdi # rdi = rax.ptr
+    leaq    16(%rsi), %rsi # rsi = a1.ptr
+
+    pushq   %rax # save rax/Pointer to the new list
+    call    my_memcpy # rdi = rax.ptr, rsi = a1.ptr, rdx = a1.length
+    popq    %rax   # restore rax
+copy_a2_data:
+    popq    %rsi # restore a2 to rsi
+    movq    8(%rsi), %rdx # rdi = a2.len
+    testq   %rdx, %rdx # if a2.len == 0
+    jz      done
+    
+    leaq    16(%rsi), %rsi  # rsi = a2.ptr
+    shlq    $3, %rdx
+    pushq %rax
+    call    my_memcpy
+    popq   %rax # restore rax/Pointer to the new list
     jmp done
 add_str:
     cmpq    $3, (%rsi)        # is a2 a string?
@@ -562,6 +673,7 @@ add_null:
     jmp     done
 
 my_memcpy:
+# copy %rdx bytes from %rsi to %rdi
     pushq   %rbp
     movq    %rsp, %rbp
 
